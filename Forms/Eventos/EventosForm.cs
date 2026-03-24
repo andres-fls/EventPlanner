@@ -54,5 +54,32 @@ namespace EventPlanner
 
             this.Close();
         }
+
+        private void btnEditar_Click(object sender, EventArgs e)
+        {
+            if (dgvEventos.SelectedRows.Count == 0)
+                {
+                MessageBox.Show("Por favor, selecciona un evento para editar.");
+                return;
+            }
+        }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            if (dgvEventos.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Por favor, selecciona un evento para eliminar.");
+                return;
+            }
+        }
+
+        private void btnInscribirse_Click(object sender, EventArgs e)
+        {
+            if (dgvEventos.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Por favor, selecciona un evento para inscribirte.");
+                return;
+            }
+        }
     }
 }

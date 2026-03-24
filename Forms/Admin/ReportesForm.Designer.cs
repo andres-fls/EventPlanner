@@ -80,6 +80,7 @@
             this.btnExportar.TabIndex = 11;
             this.btnExportar.Text = "Exportar";
             this.btnExportar.UseVisualStyleBackColor = true;
+            this.btnExportar.Click += new System.EventHandler(this.btnExportar_Click);
             // 
             // btnReporte
             // 
@@ -90,6 +91,7 @@
             this.btnReporte.TabIndex = 10;
             this.btnReporte.Text = "Ver Reporte";
             this.btnReporte.UseVisualStyleBackColor = true;
+            this.btnReporte.Click += new System.EventHandler(this.btnReporte_Click);
             // 
             // groupBox1
             // 
@@ -135,8 +137,9 @@
             this.cmbTipoReporte.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbTipoReporte.FormattingEnabled = true;
             this.cmbTipoReporte.Items.AddRange(new object[] {
-            "Eventos",
-            "Aprendices"});
+            "Evento",
+            "Aprendiz",
+            "Ambos"});
             this.cmbTipoReporte.Location = new System.Drawing.Point(108, 19);
             this.cmbTipoReporte.Name = "cmbTipoReporte";
             this.cmbTipoReporte.Size = new System.Drawing.Size(137, 28);
@@ -188,6 +191,7 @@
             this.Controls.Add(this.panelBase);
             this.Name = "ReportesForm";
             this.Text = "EventPlanner";
+            this.Load += new System.EventHandler(this.ReportesForm_Load);
             this.panelBase.ResumeLayout(false);
             this.panelBase.PerformLayout();
             this.groupBox1.ResumeLayout(false);
