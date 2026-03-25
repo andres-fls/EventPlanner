@@ -1,3 +1,3 @@
 <Solution>
-  <Project Path="EventPlanner.csproj" Id="a406fe18-ef42-4d83-8321-7abfc26ef725" />
+  <Project Path="src/EventPlanner/EventPlanner.csproj" Id="a406fe18-ef42-4d83-8321-7abfc26ef725" />
 </Solution>
