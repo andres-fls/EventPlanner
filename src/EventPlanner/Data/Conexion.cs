@@ -1,41 +1,19 @@
-﻿using System;
+﻿using System.Configuration;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Windows.Forms;
 
-namespace EventPlanner
+class Conexion
 {
-    class Conexion
+    public SqlConnection Conectar()
     {
-        SqlConnection con;
+        var cs = ConfigurationManager.ConnectionStrings["EventPlannerDB"];
 
-        public SqlConnection Conectar()
-        {
-            try
-            {
-                string cadena =
-                    ConfigurationManager
-                    .ConnectionStrings["EventPlannerDB"]
-                    .ConnectionString;
+        if (cs == null)
+            throw new ConfigurationErrorsException(
+                "Falta la cadena de conexión 'EventPlannerDB' en App.config");
 
-                con = new SqlConnection(cadena);
-                con.Open();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error de conexión: " + e.Message);
-            }
+        SqlConnection conexion = new SqlConnection(cs.ConnectionString);
+        conexion.Open();
 
-            return con;
-        }
-
-        public void Cerrar()
-        {
-            if (con != null &&
-                con.State == System.Data.ConnectionState.Open)
-            {
-                con.Close();
-            }
-        }
+        return conexion;
     }
 }

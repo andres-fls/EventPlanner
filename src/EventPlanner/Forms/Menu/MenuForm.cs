@@ -43,8 +43,10 @@ namespace EventPlanner
 
         private void btnSalir_Click(object sender, EventArgs e)
         {
+           LoginForm login = new LoginForm();
+            this.Hide();
+            login.ShowDialog();
             this.Close();
-
         }
 
         private void btnReportes_Click(object sender, EventArgs e)

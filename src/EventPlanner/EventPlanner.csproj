@@ -52,6 +52,7 @@
     <Compile Include="Data\DAO\EventoDAO.cs" />
     <Compile Include="Data\DAO\InscripcionDAO.cs" />
     <Compile Include="Data\DAO\UsuarioDAO.cs" />
+    <Compile Include="Data\Database.cs" />
     <Compile Include="Models\Aprendiz.cs" />
     <Compile Include="Models\Evento.cs" />
     <Compile Include="Models\Inscripcion.cs" />
