@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using EventPlanner.Data;
 using EventPlanner.Utils;
 
 namespace EventPlanner
@@ -14,12 +15,7 @@ namespace EventPlanner
 
         private void LoginForm_Load(object sender, EventArgs e)
         { 
-            cmbRol.Items.Clear();
-
-            cmbRol.Items.Add("Admin");
-            cmbRol.Items.Add("Aprendiz");
-            cmbRol.SelectedIndex = 0;
-
+          
             txtPassword.UseSystemPasswordChar = true;
 
             txtUsuario.Focus();
@@ -36,12 +32,23 @@ namespace EventPlanner
             if (Validator.CampoVacio(txtPassword, "Contraseña"))
                 return;
 
-            string rol = cmbRol.SelectedItem.ToString();
+            UsuarioDAO dao = new UsuarioDAO();
 
-            MenuForm menu = new MenuForm(rol);
-            menu.Show();
+            string rol = dao.ValidarLogin(txtUsuario.Text, txtPassword.Text);
 
-            this.Hide();
+            if (rol != null)
+            {
+                MessageBox.Show("Bienvenido iniciaste sesion como: " + rol);
+
+                MenuForm menu = new MenuForm(rol);
+                menu.Show();
+
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Usuario o contraseña incorrectos");     
+            }
         }
         private void linkRegistro_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -51,5 +58,9 @@ namespace EventPlanner
             this.Show();
         }
 
+        private void btnSalir_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
