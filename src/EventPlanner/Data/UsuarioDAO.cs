@@ -2,14 +2,13 @@
 
 namespace EventPlanner.Data
 {
-    class UsuarioDAO
+    public class UsuarioDAO
     {
-        Conexion cn = new Conexion();
-
         public string ValidarLogin(string usuario, string password)
         {
-            using (SqlConnection conexion = cn.Conectar())
+            using (SqlConnection conexion = new Conexion().Conectar())
             {
+                conexion.Open();
                 string query = @"SELECT rolusuario 
                                  FROM usuario
                                  WHERE nombreusuario = @usuario
@@ -20,12 +19,9 @@ namespace EventPlanner.Data
                     cmd.Parameters.AddWithValue("@usuario", usuario);
                     cmd.Parameters.AddWithValue("@password", password);
 
-                    var resultado = cmd.ExecuteScalar();
+                    object resultado = cmd.ExecuteScalar();
 
-                    if (resultado != null)
-                        return resultado.ToString();
-
-                    return null;
+                    return resultado?.ToString();
                 }
             }
         }

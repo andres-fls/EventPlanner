@@ -1,19 +1,15 @@
-﻿using System.Configuration;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 
-class Conexion
+namespace EventPlanner.Data
 {
-    public SqlConnection Conectar()
+    public class Conexion
     {
-        var cs = ConfigurationManager.ConnectionStrings["EventPlannerDB"];
+        private string cadenaConexion =
+            "Server=.;Database=EventPlanner;Trusted_Connection=True;";
 
-        if (cs == null)
-            throw new ConfigurationErrorsException(
-                "Falta la cadena de conexión 'EventPlannerDB' en App.config");
-
-        SqlConnection conexion = new SqlConnection(cs.ConnectionString);
-        conexion.Open();
-
-        return conexion;
+        public SqlConnection Conectar()
+        {
+            return new SqlConnection(cadenaConexion);
+        }
     }
 }

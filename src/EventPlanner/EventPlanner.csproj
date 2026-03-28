@@ -55,7 +55,10 @@
     <Compile Include="Data\Database.cs" />
     <Compile Include="Models\Aprendiz.cs" />
     <Compile Include="Models\Evento.cs" />
+    <Compile Include="Models\Ficha.cs" />
+    <Compile Include="Models\Grupo.cs" />
     <Compile Include="Models\Inscripcion.cs" />
+    <Compile Include="Models\Programa.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Utils\AppConfig.cs" />
     <Compile Include="Forms\Eventos\CrearEventoForm.cs">

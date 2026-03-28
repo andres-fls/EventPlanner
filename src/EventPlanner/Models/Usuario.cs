@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace EventPlanner.Models
 {
-    internal class Usuario
+    public class Usuario
     {
+        public int IdUsuario { get; set; }
+        public string NombreUsuario { get; set; }
+        public string PasswordUsuario { get; set; }
+        public string RolUsuario { get; set; }
     }
 }
