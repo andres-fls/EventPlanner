@@ -8,13 +8,13 @@ namespace EventPlanner.Models
 {
     public class Inscripcion
     {
-        public string IdInscripcion { get; set; }
-        public DateTime FechaInscripcion { get; set; }
-        public string TipoInscripcion { get; set; }
-        public string Modalidad { get; set; }
-        public string EstadoInscripcion { get; set; }
-        public int IdEvento { get; set; }
-        public int IdAprendiz { get; set; }
-        public int? IdGrupo { get; set; }
+        public int idInscripcion { get; set; }
+        public DateTime fechaInscripcion { get; set; }
+        public string tipoInscripcion { get; set; }
+        public string modalidad { get; set; }
+        public string estadoInscripcion { get; set; }
+        public int idEvento { get; set; }
+        public int idAprendiz { get; set; }
+        public int? idGrupo { get; set; }
     }
 }

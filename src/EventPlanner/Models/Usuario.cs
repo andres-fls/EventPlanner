@@ -8,9 +8,9 @@ namespace EventPlanner.Models
 {
     public class Usuario
     {
-        public int IdUsuario { get; set; }
-        public string NombreUsuario { get; set; }
-        public string PasswordUsuario { get; set; }
-        public string RolUsuario { get; set; }
+        public int idUsuario { get; set; }
+        public string nombreUsuario { get; set; }
+        public string passwordUsuario { get; set; }
+        public string rolUsuario { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace EventPlanner.Models
 {
     public class Grupo
     {
-        public int IdGrupo { get; set; }
-        public string NombreGrupo { get; set; }
+        public int idGrupo { get; set; }
+        public string nombreGrupo { get; set; }
     }
 }

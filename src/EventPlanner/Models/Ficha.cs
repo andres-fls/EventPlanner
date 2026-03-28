@@ -8,7 +8,7 @@ namespace EventPlanner.Models
 {
     public class Ficha
     {
-        public int CodigoFicha { get; set; }
-        public int IdPrograma { get; set; }
+        public int codigoFicha { get; set; }
+        public int idPrograma { get; set; }
     }
 }
