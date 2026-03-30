@@ -157,5 +157,48 @@ namespace EventPlanner.DAO
                 }
             }
         }
+
+        // ======================================
+        // OBTENER EVENTOS POR RANGO DE FECHAS
+        // ======================================
+        public List<Evento> ObtenerEventosPorFecha(DateTime desde, DateTime hasta)
+        {
+            List<Evento> lista = new List<Evento>();
+
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                conexion.Open();
+
+                string query = @"SELECT * FROM Evento
+                         WHERE fechaInicioEvento >= @desde
+                         AND fechaInicioEvento <= @hasta";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@desde", desde);
+                    cmd.Parameters.AddWithValue("@hasta", hasta);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lista.Add(new Evento()
+                            {
+                                idEvento = Convert.ToInt32(reader["idEvento"]),
+                                nombreEvento = reader["nombreEvento"].ToString(),
+                                tipoEvento = reader["tipoEvento"].ToString(),
+                                lugarEvento = reader["lugarEvento"].ToString(),
+                                fechaInicioEvento = Convert.ToDateTime(reader["fechaInicioEvento"]),
+                                cupoMaximo = Convert.ToInt32(reader["cupoMaximo"]),
+                                activo = Convert.ToBoolean(reader["activo"])
+                            });
+                        }
+                    }
+                }
+            }
+
+            return lista;
+        }
+
     }
 }

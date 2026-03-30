@@ -57,5 +57,19 @@ namespace EventPlanner.Services
             if (aprendiz.codigoFicha <= 0)
                 throw new Exception("Debe especificarse una ficha válida.");
         }
+
+        public Aprendiz BuscarPorIdUsuario(int idUsuario)
+        {
+            if (idUsuario <= 0)
+                throw new Exception("ID de usuario inválido.");
+
+            return aprendizDAO.BuscarPorIdUsuario(idUsuario);
+        }
+
+        public List<Aprendiz> ObtenerAprendicesPorFecha(DateTime desde, DateTime hasta)
+        {
+            return aprendizDAO.ObtenerAprendicesPorFecha(desde, hasta);
+        }
+
     }
 }

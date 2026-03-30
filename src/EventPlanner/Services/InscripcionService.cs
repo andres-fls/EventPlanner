@@ -58,5 +58,13 @@ namespace EventPlanner.Services
         {
             inscripcionDAO.ActualizarEstado(idInscripcion, nuevoEstado);
         }
+
+        // ==========================
+        // OBTENER CON DETALLE
+        // ==========================
+        public List<InscripcionDetalle> ObtenerInscripcionesConDetalle()
+        {
+            return inscripcionDAO.ObtenerInscripcionesConDetalle();
+        }
     }
 }

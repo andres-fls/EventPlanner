@@ -129,6 +129,44 @@ namespace EventPlanner
                 MessageBox.Show("Por favor, selecciona un evento para inscribirte.");
                 return;
             }
+
+            Evento seleccionado = (Evento)dgvEventos.SelectedRows[0].DataBoundItem;
+
+            if (!seleccionado.activo)
+            {
+                MessageBox.Show("Este evento no está activo.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult confirmacion = MessageBox.Show(
+                $"¿Deseas inscribirte en el evento '{seleccionado.nombreEvento}'?",
+                "Confirmar inscripción",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirmacion == DialogResult.Yes)
+            {
+                try
+                {
+                    Inscripcion inscripcion = new Inscripcion()
+                    {
+                        idAprendiz = Session.IdAprendiz,
+                        idEvento = seleccionado.idEvento,
+                        tipoInscripcion = "Individual",
+                        modalidad = "Presencial",
+                        estadoInscripcion = "Activo"
+                    };
+
+                    InscripcionService service = new InscripcionService();
+                    service.CrearInscripcion(inscripcion);
+
+                    MessageBox.Show("Te has inscrito exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al inscribirse: " + ex.Message);
+                }
+            }
         }
     }
 }

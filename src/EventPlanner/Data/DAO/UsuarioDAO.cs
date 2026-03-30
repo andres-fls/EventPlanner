@@ -1,8 +1,11 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using EventPlanner.Data;
+using EventPlanner.Models;
 using EventPlanner.Utils;
+using System;
+using System.Data.SqlClient;
 
-namespace EventPlanner.Data
+namespace EventPlanner.DAO
+
 {
     public class UsuarioDAO
     {
@@ -34,5 +37,27 @@ namespace EventPlanner.Data
 
             return null;
         }
+
+        public int CrearUsuario(Usuario usuario)
+        {
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                conexion.Open();
+
+                string query = @"INSERT INTO Usuario (nombreusuario, passwordusuario, rolusuario)
+                         OUTPUT INSERTED.idUsuario
+                         VALUES (@usuario, @password, @rol)";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@usuario", usuario.nombreUsuario);
+                    cmd.Parameters.AddWithValue("@password", usuario.passwordUsuario);
+                    cmd.Parameters.AddWithValue("@rol", usuario.rolUsuario);
+
+                    return (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
     }
 }

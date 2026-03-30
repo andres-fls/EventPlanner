@@ -55,5 +55,11 @@ namespace EventPlanner.Services
             ValidarEvento(evento);
             return eventoDAO.ActualizarEvento(evento);
         }
+
+        public List<Evento> ObtenerEventosPorFecha(DateTime desde, DateTime hasta)
+        {
+            return eventoDAO.ObtenerEventosPorFecha(desde, hasta);
+        }
+
     }
 }

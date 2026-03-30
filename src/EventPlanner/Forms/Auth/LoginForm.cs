@@ -1,7 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-using EventPlanner.Data;
+﻿using EventPlanner.Models;
+using EventPlanner.Services;
 using EventPlanner.Utils;
+using System;
+using System.Windows.Forms;
 
 namespace EventPlanner
 {
@@ -26,28 +27,34 @@ namespace EventPlanner
             txtUsuario.Text = txtUsuario.Text.Trim();
             txtPassword.Text = txtPassword.Text.Trim();
 
-            if (Validator.CampoVacio(txtUsuario, "Usuario"))
-                return;
+            if (Validator.CampoVacio(txtUsuario, "Usuario")) return;
+            if (Validator.CampoVacio(txtPassword, "Contraseña")) return;
 
-            if (Validator.CampoVacio(txtPassword, "Contraseña"))
-                return;
-
-            UsuarioDAO dao = new UsuarioDAO();
-
-            string rol = dao.ValidarLogin(txtUsuario.Text, txtPassword.Text);
-
-            if (rol != null)
+            try
             {
-                MessageBox.Show("Bienvenido iniciaste sesion como: " + rol);
+                UsuarioService service = new UsuarioService();
+                string rol = service.IniciarSesion(txtUsuario.Text, txtPassword.Text);
+
+                Session.Rol = rol;
+
+                // Si es aprendiz, guardar su idAprendiz en sesión
+                if (rol == "Aprendiz")
+                {
+                    AprendizService aprendizService = new AprendizService();
+                    Aprendiz aprendiz = aprendizService.BuscarPorIdUsuario(Session.IdUsuario);
+                    if (aprendiz != null)
+                        Session.IdAprendiz = aprendiz.idAprendiz;
+                }
+
+                MessageBox.Show("Bienvenido, iniciaste sesión como: " + rol);
 
                 MenuForm menu = new MenuForm(rol);
                 menu.Show();
-
                 this.Hide();
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Usuario o contraseña incorrectos");     
+                MessageBox.Show(ex.Message);
             }
         }
         private void linkRegistro_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

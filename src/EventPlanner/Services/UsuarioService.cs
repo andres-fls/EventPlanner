@@ -1,4 +1,5 @@
-﻿using EventPlanner.Data;
+﻿using EventPlanner.DAO;
+using EventPlanner.Models;
 using System;
 
 namespace EventPlanner.Services
@@ -26,5 +27,17 @@ namespace EventPlanner.Services
 
             return rol;
         }
+
+        public int RegistrarUsuario(Usuario usuario)
+        {
+            if (string.IsNullOrWhiteSpace(usuario.nombreUsuario))
+                throw new Exception("El nombre de usuario es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(usuario.passwordUsuario))
+                throw new Exception("La contraseña es obligatoria.");
+
+            return usuarioDAO.CrearUsuario(usuario);
+        }
+
     }
 }
