@@ -96,6 +96,46 @@ namespace EventPlanner.DAO
             return lista;
         }
 
+
+        // ======================================
+        // ACTUALIZAR EVENTO
+        // ======================================
+        public bool ActualizarEvento(Evento evento)
+        {
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                conexion.Open();
+
+                string query = @"UPDATE Evento SET
+                        nombreEvento = @nombre,
+                        tipoEvento = @tipo,
+                        lugarEvento = @lugar,
+                        descripcionEvento = @descripcion,
+                        fechaInicioEvento = @fechaInicio,
+                        fechaInicioInscripcion = @inicioInscripcion,
+                        fechaFinInscripcion = @finInscripcion,
+                        cupoMaximo = @cupo,
+                        activo = @activo
+                        WHERE idEvento = @id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@nombre", evento.nombreEvento);
+                    cmd.Parameters.AddWithValue("@tipo", evento.tipoEvento);
+                    cmd.Parameters.AddWithValue("@lugar", evento.lugarEvento);
+                    cmd.Parameters.AddWithValue("@descripcion", evento.descripcionEvento);
+                    cmd.Parameters.AddWithValue("@fechaInicio", evento.fechaInicioEvento);
+                    cmd.Parameters.AddWithValue("@inicioInscripcion", evento.fechaInicioInscripcion);
+                    cmd.Parameters.AddWithValue("@finInscripcion", evento.fechaFinInscripcion);
+                    cmd.Parameters.AddWithValue("@cupo", evento.cupoMaximo);
+                    cmd.Parameters.AddWithValue("@activo", evento.activo);
+                    cmd.Parameters.AddWithValue("@id", evento.idEvento);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
         // ======================================
         // DESACTIVAR EVENTO (SOFT DELETE)
         // ======================================

@@ -60,9 +60,15 @@
     <Compile Include="Models\Ficha.cs" />
     <Compile Include="Models\Grupo.cs" />
     <Compile Include="Models\Inscripcion.cs" />
+    <Compile Include="Models\InscripcionDetalle.cs" />
     <Compile Include="Models\Programa.cs" />
     <Compile Include="Models\Usuario.cs" />
+    <Compile Include="Services\AprendizService.cs" />
     <Compile Include="Services\EventoService.cs" />
+    <Compile Include="Services\FichaService.cs" />
+    <Compile Include="Services\GrupoService.cs" />
+    <Compile Include="Services\InscripcionService.cs" />
+    <Compile Include="Services\ProgramaService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="Utils\AppConfig.cs" />
     <Compile Include="Forms\Eventos\CrearEventoForm.cs">
@@ -109,6 +115,7 @@
     <Compile Include="Forms\Admin\UsuariosForm.Designer.cs">
       <DependentUpon>UsuariosForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Session.cs" />
     <Compile Include="Utils\Validator.cs" />
     <EmbeddedResource Include="Forms\Eventos\CrearEventoForm.resx">
       <DependentUpon>CrearEventoForm.cs</DependentUpon>

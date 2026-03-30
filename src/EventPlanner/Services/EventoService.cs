@@ -39,14 +39,21 @@ namespace EventPlanner.Services
         // ==========================
         private void ValidarEvento(Evento evento)
         {
-            if (evento.fechaFinEvento <= evento.fechaInicioEvento)
-                throw new Exception("La fecha fin no puede ser menor o igual a la fecha inicio.");
 
             if (evento.fechaFinInscripcion < evento.fechaInicioInscripcion)
                 throw new Exception("Rango de inscripción inválido.");
 
             if (evento.cupoMaximo < 0)
                 throw new Exception("El cupo no puede ser negativo.");
+        }
+
+        // ==========================
+        // ACTUALIZAR EVENTO
+        // ==========================
+        public bool ActualizarEvento(Evento evento)
+        {
+            ValidarEvento(evento);
+            return eventoDAO.ActualizarEvento(evento);
         }
     }
 }

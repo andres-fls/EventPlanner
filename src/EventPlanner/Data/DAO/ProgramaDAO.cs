@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using EventPlanner.Models;
+using EventPlanner.Data;
 
-namespace EventPlanner.Data
+namespace EventPlanner.DAO
 {
     public class ProgramaDAO
     {

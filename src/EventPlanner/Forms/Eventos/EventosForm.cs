@@ -1,6 +1,9 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using EventPlanner.Models;
+using EventPlanner.Services;
 using EventPlanner.Utils;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 
 namespace EventPlanner
@@ -27,7 +30,7 @@ namespace EventPlanner
             {
                 btnInscribirse.Visible = false;
             }
-            
+            CargarEventos();
         }
 
         private void panelBase_Paint(object sender, PaintEventArgs e)
@@ -43,8 +46,34 @@ namespace EventPlanner
         }
         private void CargarEventos()
         {
-            // Aquí puedes cargar los eventos desde tu fuente de datos y mostrarlos en el panel
-            // Por ejemplo, podrías usar un List<Evento> para almacenar los eventos y luego mostrarlos en un ListBox o DataGridView
+            try
+            {
+                EventoService service = new EventoService();
+                List<Evento> eventos = service.ObtenerEventos();
+
+                dgvEventos.DataSource = null;
+                dgvEventos.DataSource = eventos;
+
+                // Nombres de columnas más legibles
+                dgvEventos.Columns["idEvento"].HeaderText = "ID";
+                dgvEventos.Columns["nombreEvento"].HeaderText = "Nombre";
+                dgvEventos.Columns["tipoEvento"].HeaderText = "Tipo";
+                dgvEventos.Columns["lugarEvento"].HeaderText = "Lugar";
+                dgvEventos.Columns["fechaInicioEvento"].HeaderText = "Fecha";
+                dgvEventos.Columns["cupoMaximo"].HeaderText = "Cupo";
+                dgvEventos.Columns["activo"].HeaderText = "Activo";
+
+                // Ocultar columnas que no necesita ver el usuario
+                dgvEventos.Columns["descripcionEvento"].Visible = false;
+                dgvEventos.Columns["fechaFinEvento"].Visible = false;
+                dgvEventos.Columns["fechaInicioInscripcion"].Visible = false;
+                dgvEventos.Columns["fechaFinInscripcion"].Visible = false;
+                dgvEventos.Columns["idUsuarioCreador"].Visible = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar eventos: " + ex.Message);
+            }
         }
 
         private void btnVolver_Click(object sender, EventArgs e)
@@ -58,18 +87,38 @@ namespace EventPlanner
         private void btnEditar_Click(object sender, EventArgs e)
         {
             if (dgvEventos.SelectedRows.Count == 0)
-                {
-                MessageBox.Show("Por favor, selecciona un evento para editar.");
+            {
+                MessageBox.Show("Selecciona un evento para editar.");
                 return;
             }
+
+            Evento seleccionado = (Evento)dgvEventos.SelectedRows[0].DataBoundItem;
+            CrearEventoForm editar = new CrearEventoForm(rolUsuario, seleccionado);
+            editar.ShowDialog();
+            CargarEventos();
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (dgvEventos.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Por favor, selecciona un evento para eliminar.");
+                MessageBox.Show("Selecciona un evento para eliminar.");
                 return;
+            }
+
+            DialogResult confirmacion = MessageBox.Show(
+                "¿Estás seguro de que deseas desactivar este evento?",
+                "Confirmar eliminación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirmacion == DialogResult.Yes)
+            {
+                Evento seleccionado = (Evento)dgvEventos.SelectedRows[0].DataBoundItem;
+                EventoService service = new EventoService();
+                service.DesactivarEvento(seleccionado.idEvento);
+                MessageBox.Show("Evento desactivado correctamente.");
+                CargarEventos();
             }
         }
 
