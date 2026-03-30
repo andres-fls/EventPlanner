@@ -19,7 +19,6 @@ CREATE TABLE Usuario(
     passwordUsuario VARCHAR(255) NOT NULL,
     rolUsuario VARCHAR(20) NOT NULL
 );
-GO
 
 
 /* ============================
@@ -33,7 +32,6 @@ CREATE TABLE Programa(
     duracionPrograma VARCHAR(20) NOT NULL,
     nivelPrograma VARCHAR(20) NOT NULL
 );
-GO
 
 
 /* ============================
@@ -49,7 +47,6 @@ CREATE TABLE Ficha(
     FOREIGN KEY (codigoPrograma)
         REFERENCES Programa(codigoPrograma)
 );
-GO
 
 
 /* ============================
@@ -74,7 +71,6 @@ CREATE TABLE Aprendiz(
     FOREIGN KEY (idUsuario)
         REFERENCES Usuario(idUsuario)
 );
-GO
 
 
 /* ============================
@@ -136,7 +132,18 @@ CREATE TABLE Inscripcion(
     FOREIGN KEY (idEvento)
         REFERENCES Evento(idEvento),
 
-    FOREIGN KEY (idGrupo)
-        REFERENCES Grupo(idGrupo)
+-- 7. Tabla de Inscripciones
+CREATE TABLE Inscripcion (
+    IdInscripcion INT PRIMARY KEY IDENTITY(1,1),
+    FechaInscripcion DATETIME DEFAULT GETDATE(),
+    TipoInscripcion VARCHAR(50),
+    Modalidad VARCHAR(20), -- Individual, Equipo
+    EstadoInscripcion VARCHAR(20) DEFAULT 'Activo', -- Activo, Cancelado
+    IdAprendiz INT NOT NULL,
+    IdEvento INT NOT NULL,
+    IdGrupo INT NULL,
+    FOREIGN KEY (IdAprendiz) REFERENCES Aprendiz(IdAprendiz),
+    FOREIGN KEY (IdEvento) REFERENCES Evento(IdEvento),
+    FOREIGN KEY (IdGrupo) REFERENCES Grupo(IdGrupo)
 );
 GO
