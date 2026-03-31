@@ -36,6 +36,7 @@
             this.btnCrear = new System.Windows.Forms.Button();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.dgvEventos = new System.Windows.Forms.DataGridView();
+            this.btnCancelarInscripcion = new System.Windows.Forms.Button();
             this.panelBase.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEventos)).BeginInit();
             this.SuspendLayout();
@@ -43,6 +44,7 @@
             // panelBase
             // 
             this.panelBase.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.panelBase.Controls.Add(this.btnCancelarInscripcion);
             this.panelBase.Controls.Add(this.btnVolver);
             this.panelBase.Controls.Add(this.btnInscribirse);
             this.panelBase.Controls.Add(this.btnEliminar);
@@ -59,7 +61,7 @@
             // btnVolver
             // 
             this.btnVolver.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVolver.Location = new System.Drawing.Point(447, 353);
+            this.btnVolver.Location = new System.Drawing.Point(387, 353);
             this.btnVolver.Name = "btnVolver";
             this.btnVolver.Size = new System.Drawing.Size(80, 35);
             this.btnVolver.TabIndex = 12;
@@ -70,9 +72,9 @@
             // btnInscribirse
             // 
             this.btnInscribirse.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInscribirse.Location = new System.Drawing.Point(642, 355);
+            this.btnInscribirse.Location = new System.Drawing.Point(547, 353);
             this.btnInscribirse.Name = "btnInscribirse";
-            this.btnInscribirse.Size = new System.Drawing.Size(99, 34);
+            this.btnInscribirse.Size = new System.Drawing.Size(94, 34);
             this.btnInscribirse.TabIndex = 11;
             this.btnInscribirse.Text = "Inscribirme";
             this.btnInscribirse.UseVisualStyleBackColor = true;
@@ -81,7 +83,7 @@
             // btnEliminar
             // 
             this.btnEliminar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEliminar.Location = new System.Drawing.Point(309, 354);
+            this.btnEliminar.Location = new System.Drawing.Point(263, 354);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(80, 35);
             this.btnEliminar.TabIndex = 10;
@@ -92,7 +94,7 @@
             // btnEditar
             // 
             this.btnEditar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEditar.Location = new System.Drawing.Point(177, 354);
+            this.btnEditar.Location = new System.Drawing.Point(149, 354);
             this.btnEditar.Name = "btnEditar";
             this.btnEditar.Size = new System.Drawing.Size(80, 35);
             this.btnEditar.TabIndex = 9;
@@ -130,6 +132,16 @@
             this.dgvEventos.Size = new System.Drawing.Size(696, 281);
             this.dgvEventos.TabIndex = 7;
             // 
+            // btnCancelarInscripcion
+            // 
+            this.btnCancelarInscripcion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancelarInscripcion.Location = new System.Drawing.Point(672, 353);
+            this.btnCancelarInscripcion.Name = "btnCancelarInscripcion";
+            this.btnCancelarInscripcion.Size = new System.Drawing.Size(69, 36);
+            this.btnCancelarInscripcion.TabIndex = 13;
+            this.btnCancelarInscripcion.Text = "Cancelar inscripcion";
+            this.btnCancelarInscripcion.UseVisualStyleBackColor = true;
+            // 
             // EventosForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -161,5 +173,6 @@
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.DataGridView dgvEventos;
         private System.Windows.Forms.Button btnVolver;
+        private System.Windows.Forms.Button btnCancelarInscripcion;
     }
 }
