@@ -18,7 +18,7 @@ namespace EventPlanner.Data
         // - "Database=EventPlanner;" -> Nombre de la base de datos a la que se conecta.
         // - "Trusted_Connection=True;" -> Usa autenticación de Windows (usuario del sistema).
         private string cadenaConexion =
-            "Server=.;Database=EventPlanner;Trusted_Connection=True;";
+            "Server=PC-00022\\SQLEXPRESS;Database=EventPlannerDB;Trusted_Connection=True;";
 
         // Método público que crea y retorna una nueva conexión a la base de datos.
         // Retorna: SqlConnection - Objeto de conexión listo para abrir y usar.

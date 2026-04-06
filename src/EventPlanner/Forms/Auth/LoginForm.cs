@@ -1,98 +1,90 @@
-﻿// ============================================================
-// Archivo: LoginForm.cs
-// Propósito: Formulario de inicio de sesión de la aplicación.
-// Permite a los usuarios autenticarse con usuario y contraseña.
-// Valida credenciales, guarda información en la sesión global
-// (rol, idUsuario, idAprendiz si corresponde) y abre el menú
-// principal según el rol. También permite navegar al registro
-// de nuevos usuarios y salir de la aplicación.
-// ============================================================
+﻿// Archivo: LoginForm.csPropósito: Formulario de inicio de sesión de la aplicación.
+// 1--Permite a los usuarios autenticarse con usuario y contraseña.2-- Valida credenciales, guarda información en la sesión global
+//y abre el menú principal según el rol. También permite navegar al registro de nuevos usuarios y salir de la aplicación.//
 
-using EventPlanner.Models;
-using EventPlanner.Services;
-using EventPlanner.Utils;
-using System;
-using System.Windows.Forms;
+using EventPlanner.Models; // Importa modelos de datos
+using EventPlanner.Services; // Importa servicios de negocio
+using EventPlanner.Utils; // Importa utilidades
+using System; // Importa base de .NET
+using System.Drawing; // Importa manejo de gráficos
+using System.Windows.Forms; // Importa Windows Forms
 
-namespace EventPlanner
+namespace EventPlanner // Espacio de nombres de la aplicación
 {
-    public partial class LoginForm : Form
+    public partial class LoginForm : Form // Clase del formulario de login
     {
-        // Constructor: inicializa componentes y aplica tamaño desde configuración
-        public LoginForm()
+        public LoginForm() // Constructor público
         {
-            InitializeComponent();
-            this.Size = AppConfig.TamanoVentana;
+            InitializeComponent(); // Inicializa componentes
+            this.Size = AppConfig.TamanoVentana; // Aplica tamaño desde config
         }
 
-        // Al cargar el formulario, configura el campo de contraseña para ocultar caracteres
-        // y coloca el foco en el campo de usuario.
-        private void LoginForm_Load(object sender, EventArgs e)
+        private void LoginForm_Load(object sender, EventArgs e) // Evento Load del formulario
         {
-            // Muestra asteriscos en lugar de texto plano
-            txtPassword.UseSystemPasswordChar = true;
+            txtPassword.UseSystemPasswordChar = true; // Oculta contraseña con asteriscos
 
-            // Posiciona el cursor en el campo de usuario para facilitar el ingreso
-            txtUsuario.Focus();
+            // poner foco en el textbox de usuario
+            txtUsuario.Focus(); // Enfoca el campo usuario
         }
 
-        // Botón "Iniciar Sesión": valida credenciales y autentica al usuario
-        private void btnLogin_Click(object sender, EventArgs e)
+        private void btnLogin_Click(object sender, EventArgs e) // Evento Click del botón login
         {
             // Limpia espacios en blanco al inicio y final
-            txtUsuario.Text = txtUsuario.Text.Trim();
-            txtPassword.Text = txtPassword.Text.Trim();
+            txtUsuario.Text = txtUsuario.Text.Trim(); // Limpia usuario
+            txtPassword.Text = txtPassword.Text.Trim(); // Limpia contraseña
 
             // Validación de campos vacíos
-            if (Validator.CampoVacio(txtUsuario, "Usuario")) return;
-            if (Validator.CampoVacio(txtPassword, "Contraseña")) return;
+            if (Validator.CampoVacio(txtUsuario, "Usuario")) return; // Valida usuario no vacío
+            if (Validator.CampoVacio(txtPassword, "Contraseña")) return; // Valida contraseña no vacía
 
-            try
+            try // Bloque try
             {
-                UsuarioService service = new UsuarioService();
+                UsuarioService service = new UsuarioService(); // Instancia servicio usuario
                 // Llama al servicio para validar usuario y contraseña; retorna el rol si es exitoso
-                string rol = service.IniciarSesion(txtUsuario.Text, txtPassword.Text);
+                string rol = service.IniciarSesion(txtUsuario.Text, txtPassword.Text); // Inicia sesión
 
                 // Guarda el rol en la sesión global para usarlo en otros formularios
-                Session.Rol = rol;
+                Session.Rol = rol; // Asigna rol a sesión
 
                 // Si el usuario es aprendiz, también guarda su idAprendiz en la sesión
-                if (rol == "Aprendiz")
+                if (rol == "Aprendiz") // Verifica si es aprendiz
                 {
-                    AprendizService aprendizService = new AprendizService();
-                    Aprendiz aprendiz = aprendizService.BuscarPorIdUsuario(Session.IdUsuario);
-                    if (aprendiz != null)
-                        Session.IdAprendiz = aprendiz.idAprendiz;
+                    AprendizService aprendizService = new AprendizService(); // Instancia servicio aprendiz
+                    Aprendiz aprendiz = aprendizService.BuscarPorIdUsuario(Session.IdUsuario); // Busca aprendiz
+                    if (aprendiz != null) // Si encuentra
+                        Session.IdAprendiz = aprendiz.idAprendiz; // Asigna ID aprendiz
                 }
 
                 // Mensaje de bienvenida con el rol del usuario
-                MessageBox.Show("Bienvenido, iniciaste sesión como: " + rol);
+                MessageBox.Show("Bienvenido, iniciaste sesión como: " + rol); // Muestra bienvenida
 
                 // Abre el menú principal y oculta el formulario de login
-                MenuForm menu = new MenuForm(rol);
-                menu.Show();
-                this.Hide();
+                MenuForm menu = new MenuForm(rol); // Instancia menú
+                menu.Show(); // Muestra menú
+                this.Hide(); // Oculta login
             }
-            catch (Exception ex)
+            catch (Exception ex) // Captura excepciones
             {
                 // Muestra el error (por ejemplo, "Usuario o contraseña incorrectos")
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message); // Muestra error
             }
         }
 
-        // Enlace "Registrarse": abre el formulario de registro de nuevos aprendices
-        private void linkRegistro_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkRegistro_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) // Evento LinkClicked del enlace registro
         {
-            RegistroForm registro = new RegistroForm();
-            this.Hide();          // Oculta el login mientras se registra
-            registro.ShowDialog(); // Muestra el registro de forma modal
-            this.Show();          // Al cerrar registro, vuelve a mostrar el login
+            RegistroForm registro = new RegistroForm(); // Instancia registro
+            this.Hide(); registro.ShowDialog(); this.Show(); // Oculta, muestra modal, vuelve
         }
 
-        // Botón "Salir": cierra completamente la aplicación
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void btnSalir_Click(object sender, EventArgs e) // Evento Click del botón salir
         {
-            Application.Exit();
+            Application.Exit(); // Cierra aplicación
+        }
+
+        private void txtUsuario_TextChanged(object sender, EventArgs e) // Evento TextChanged del textbox usuario
+        {
+            // No mover el foco ni poner cursor de espera aquí. Mantener cursor de texto.
+            Cursor = Cursors.IBeam; // Establece cursor IBeam
         }
     }
 }
