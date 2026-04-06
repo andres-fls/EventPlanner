@@ -147,3 +147,9 @@ CREATE TABLE Inscripcion (
     FOREIGN KEY (IdGrupo) REFERENCES Grupo(IdGrupo)
 );
 GO
+
+insert into Usuario(nombreUsuario, passwordUsuario, rolUsuario) values 
+('admin', 'admin123', 'Administrador');
+insert into Aprendiz(cedulaAprendiz, nombreAprendiz, edadAprendiz, generoAprendiz, correoAprendiz, telefonoAprendiz, codigoFicha, idUsuario) values 
+('1234567890', 'Juan Perez', 25, 'Masculino', 'juandavid@gmail.com', '3217483848', 101, 1);
+
