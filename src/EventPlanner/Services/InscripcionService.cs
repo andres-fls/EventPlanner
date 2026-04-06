@@ -62,42 +62,41 @@ namespace EventPlanner.Services
         // Método privado que verifica que la inscripción cumpla con las reglas del negocio.
         private void ValidarInscripcion(Inscripcion inscripcion)
         {
-            // Validación: aprendiz válido (id positivo)
             if (inscripcion.idAprendiz <= 0)
                 throw new Exception("Debe especificarse un aprendiz válido.");
 
-            // Validación: evento válido (id positivo)
             if (inscripcion.idEvento <= 0)
                 throw new Exception("Debe especificarse un evento válido.");
 
-            // Validación: tipo de inscripción no vacío
             if (string.IsNullOrWhiteSpace(inscripcion.tipoInscripcion))
                 throw new Exception("El tipo de inscripción es obligatorio.");
 
-            // Validación: modalidad no vacía
             if (string.IsNullOrWhiteSpace(inscripcion.modalidad))
                 throw new Exception("La modalidad es obligatoria.");
 
-            // Validación de fechas: verificar que el período de inscripción esté vigente
+            // Buscar el evento una sola vez
             EventoService eventoService = new EventoService();
             List<Evento> eventos = eventoService.ObtenerEventos();
-            // Busca el evento al que se intenta inscribir
             Evento evento = eventos.Find(ev => ev.idEvento == inscripcion.idEvento);
 
             if (evento != null)
             {
                 DateTime ahora = DateTime.Now;
 
-                // Si la fecha actual es anterior al inicio de inscripciones
+                // RF06 — Validar período de inscripción
                 if (ahora < evento.fechaInicioInscripcion)
                     throw new Exception("El período de inscripción aún no ha abierto.");
 
-                // Si la fecha actual es posterior al cierre de inscripciones
                 if (ahora > evento.fechaFinInscripcion)
                     throw new Exception("El período de inscripción ya cerró.");
+
+                // RF19 — Validar cruce de horarios
+                InscripcionDAO dao = new InscripcionDAO();
+                if (dao.TieneCruceHorario(inscripcion.idAprendiz, evento.fechaInicioEvento))
+                    throw new Exception("Ya tienes un evento inscrito en esa misma fecha y hora.");
             }
-            // Si el evento no existe, el DAO lanzará una excepción de clave foránea (no se valida aquí explícitamente)
         }
+
 
         // ==========================
         // ACTUALIZAR ESTADO DE INSCRIPCIÓN

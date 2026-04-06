@@ -185,5 +185,28 @@ namespace EventPlanner.DAO
                 cmd.ExecuteNonQuery();
             }
         }
+
+        // ==============================
+        // VERIFICAR CRUCE DE HORARIOS
+        // ==============================
+        public bool TieneCruceHorario(int idAprendiz, DateTime fechaInicioNuevo)
+        {
+            using (SqlConnection conn = conexion.Conectar())
+            {
+                string query = @"SELECT COUNT(*) FROM Inscripcion i
+                         INNER JOIN Evento e ON i.idEvento = e.idEvento
+                         WHERE i.idAprendiz = @idAprendiz
+                         AND i.estadoInscripcion = 'Activo'
+                         AND e.fechaInicioEvento = @fechaInicio";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@idAprendiz", idAprendiz);
+                cmd.Parameters.AddWithValue("@fechaInicio", fechaInicioNuevo);
+
+                conn.Open();
+                return (int)cmd.ExecuteScalar() > 0;
+            }
+        }
+
     }
 }
