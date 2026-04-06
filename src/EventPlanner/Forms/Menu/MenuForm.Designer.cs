@@ -42,6 +42,7 @@
             // panelBase
             // 
             this.panelBase.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.panelBase.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(245)))), ((int)(((byte)(250))))); // Color fondo azul claro
             this.panelBase.Controls.Add(this.groupBox1);
             this.panelBase.Controls.Add(this.lblTitulo);
             this.panelBase.Location = new System.Drawing.Point(0, 0);
@@ -63,18 +64,21 @@
             // 
             // btnReportes
             // 
+            this.btnReportes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180))))); // Color azul acero
+            this.btnReportes.ForeColor = System.Drawing.Color.White; // Texto blanco
             this.btnReportes.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReportes.Location = new System.Drawing.Point(84, 154);
             this.btnReportes.Name = "btnReportes";
             this.btnReportes.Size = new System.Drawing.Size(89, 35);
             this.btnReportes.TabIndex = 8;
             this.btnReportes.Text = "Reportes";
-            this.btnReportes.UseVisualStyleBackColor = true;
+            this.btnReportes.UseVisualStyleBackColor = false;
             this.btnReportes.Click += new System.EventHandler(this.btnReportes_Click);
             // 
             // btnSalir
             // 
-            this.btnSalir.BackColor = System.Drawing.Color.Firebrick;
+            this.btnSalir.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(40)))), ((int)(((byte)(40))))); // Color rojo mejorado
+            this.btnSalir.ForeColor = System.Drawing.Color.White; // Texto blanco
             this.btnSalir.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSalir.Location = new System.Drawing.Point(62, 213);
             this.btnSalir.Name = "btnSalir";
@@ -86,30 +90,36 @@
             // 
             // btnEventos
             // 
+            this.btnEventos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(120)))), ((int)(((byte)(70))))); // Color verde
+            this.btnEventos.ForeColor = System.Drawing.Color.White; // Texto blanco
             this.btnEventos.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEventos.Location = new System.Drawing.Point(84, 31);
             this.btnEventos.Name = "btnEventos";
             this.btnEventos.Size = new System.Drawing.Size(89, 35);
             this.btnEventos.TabIndex = 5;
             this.btnEventos.Text = "Eventos";
-            this.btnEventos.UseVisualStyleBackColor = true;
+            this.btnEventos.UseVisualStyleBackColor = false;
             this.btnEventos.Click += new System.EventHandler(this.btnEventos_Click);
             // 
             // btnUsuarios
             // 
+            this.btnUsuarios.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(130)))), ((int)(((byte)(70))))); // Color naranja
+            this.btnUsuarios.ForeColor = System.Drawing.Color.White; // Texto blanco
             this.btnUsuarios.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUsuarios.Location = new System.Drawing.Point(84, 91);
             this.btnUsuarios.Name = "btnUsuarios";
             this.btnUsuarios.Size = new System.Drawing.Size(89, 35);
             this.btnUsuarios.TabIndex = 6;
             this.btnUsuarios.Text = "Usuarios";
-            this.btnUsuarios.UseVisualStyleBackColor = true;
+            this.btnUsuarios.UseVisualStyleBackColor = false;
             this.btnUsuarios.Click += new System.EventHandler(this.btnUsuarios_Click);
             // 
             // lblTitulo
             // 
             this.lblTitulo.AutoSize = true;
-            this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitulo.BackColor = System.Drawing.Color.Transparent;
+            this.lblTitulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(60)))), ((int)(((byte)(120))))); // Color azul oscuro
+            this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitulo.Location = new System.Drawing.Point(262, 38);
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(214, 29);

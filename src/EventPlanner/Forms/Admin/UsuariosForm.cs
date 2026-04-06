@@ -7,9 +7,9 @@
 //       En el futuro debe conectarse a la base de datos real.
 // ============================================================
 
-using System;
-using System.Windows.Forms;
-using EventPlanner.Utils;
+using System; // Importa base de .NET
+using System.Windows.Forms; // Importa Windows Forms
+using EventPlanner.Utils; // Importa utilidades
 
 namespace EventPlanner
 {

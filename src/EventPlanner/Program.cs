@@ -7,8 +7,8 @@
 // el programa.
 // ============================================================
 
-using System;
-using System.Windows.Forms;
+using System; // Importa base de .NET
+using System.Windows.Forms; // Importa Windows Forms
 
 namespace EventPlanner
 {

@@ -6,11 +6,11 @@
 //            y para crear nuevos usuarios en la base de datos.
 // ============================================================
 
-using EventPlanner.Data;
-using EventPlanner.Models;
-using EventPlanner.Utils;
-using System;
-using System.Data.SqlClient;
+using EventPlanner.Data; // Importa capa de acceso a datos
+using EventPlanner.Models; // Importa modelos de datos
+using EventPlanner.Utils; // Importa utilidades
+using System; // Importa base de .NET
+using System.Data.SqlClient; // Importa SQL Server
 
 namespace EventPlanner.DAO
 {
