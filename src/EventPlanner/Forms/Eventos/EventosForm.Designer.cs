@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.panelBase = new System.Windows.Forms.Panel();
+            this.btnCancelarInscripcion = new System.Windows.Forms.Button();
             this.btnVolver = new System.Windows.Forms.Button();
             this.btnInscribirse = new System.Windows.Forms.Button();
             this.btnEliminar = new System.Windows.Forms.Button();
@@ -36,7 +37,6 @@
             this.btnCrear = new System.Windows.Forms.Button();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.dgvEventos = new System.Windows.Forms.DataGridView();
-            this.btnCancelarInscripcion = new System.Windows.Forms.Button();
             this.panelBase.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEventos)).BeginInit();
             this.SuspendLayout();
@@ -44,6 +44,7 @@
             // panelBase
             // 
             this.panelBase.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.panelBase.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.panelBase.Controls.Add(this.btnCancelarInscripcion);
             this.panelBase.Controls.Add(this.btnVolver);
             this.panelBase.Controls.Add(this.btnInscribirse);
@@ -58,65 +59,82 @@
             this.panelBase.TabIndex = 0;
             this.panelBase.Paint += new System.Windows.Forms.PaintEventHandler(this.panelBase_Paint);
             // 
+            // btnCancelarInscripcion
+            // 
+            this.btnCancelarInscripcion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(176)))), ((int)(((byte)(176)))));
+            this.btnCancelarInscripcion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancelarInscripcion.Location = new System.Drawing.Point(672, 353);
+            this.btnCancelarInscripcion.Name = "btnCancelarInscripcion";
+            this.btnCancelarInscripcion.Size = new System.Drawing.Size(69, 36);
+            this.btnCancelarInscripcion.TabIndex = 13;
+            this.btnCancelarInscripcion.Text = "Cancelar inscripcion";
+            this.btnCancelarInscripcion.UseVisualStyleBackColor = false;
+            // 
             // btnVolver
             // 
+            this.btnVolver.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(208)))), ((int)(((byte)(245)))));
             this.btnVolver.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVolver.Location = new System.Drawing.Point(387, 353);
+            this.btnVolver.Location = new System.Drawing.Point(403, 353);
             this.btnVolver.Name = "btnVolver";
             this.btnVolver.Size = new System.Drawing.Size(80, 35);
             this.btnVolver.TabIndex = 12;
             this.btnVolver.Text = "Volver";
-            this.btnVolver.UseVisualStyleBackColor = true;
+            this.btnVolver.UseVisualStyleBackColor = false;
             this.btnVolver.Click += new System.EventHandler(this.btnVolver_Click);
             // 
             // btnInscribirse
             // 
+            this.btnInscribirse.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(208)))), ((int)(((byte)(245)))));
             this.btnInscribirse.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnInscribirse.Location = new System.Drawing.Point(547, 353);
             this.btnInscribirse.Name = "btnInscribirse";
             this.btnInscribirse.Size = new System.Drawing.Size(94, 34);
             this.btnInscribirse.TabIndex = 11;
             this.btnInscribirse.Text = "Inscribirme";
-            this.btnInscribirse.UseVisualStyleBackColor = true;
+            this.btnInscribirse.UseVisualStyleBackColor = false;
             this.btnInscribirse.Click += new System.EventHandler(this.btnInscribirse_Click);
             // 
             // btnEliminar
             // 
+            this.btnEliminar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(176)))), ((int)(((byte)(176)))));
             this.btnEliminar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminar.Location = new System.Drawing.Point(263, 354);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(80, 35);
             this.btnEliminar.TabIndex = 10;
             this.btnEliminar.Text = "Eliminar";
-            this.btnEliminar.UseVisualStyleBackColor = true;
+            this.btnEliminar.UseVisualStyleBackColor = false;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
             // btnEditar
             // 
+            this.btnEditar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(208)))), ((int)(((byte)(245)))));
             this.btnEditar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEditar.Location = new System.Drawing.Point(149, 354);
             this.btnEditar.Name = "btnEditar";
             this.btnEditar.Size = new System.Drawing.Size(80, 35);
             this.btnEditar.TabIndex = 9;
             this.btnEditar.Text = "Editar";
-            this.btnEditar.UseVisualStyleBackColor = true;
+            this.btnEditar.UseVisualStyleBackColor = false;
             this.btnEditar.Click += new System.EventHandler(this.btnEditar_Click);
             // 
             // btnCrear
             // 
+            this.btnCrear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(208)))), ((int)(((byte)(245)))));
             this.btnCrear.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCrear.Location = new System.Drawing.Point(45, 353);
             this.btnCrear.Name = "btnCrear";
             this.btnCrear.Size = new System.Drawing.Size(80, 35);
             this.btnCrear.TabIndex = 8;
             this.btnCrear.Text = "Crear";
-            this.btnCrear.UseVisualStyleBackColor = true;
+            this.btnCrear.UseVisualStyleBackColor = false;
             this.btnCrear.Click += new System.EventHandler(this.btnCrear_Click);
             // 
             // lblTitulo
             // 
             this.lblTitulo.AutoSize = true;
             this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitulo.ForeColor = System.Drawing.Color.White;
             this.lblTitulo.Location = new System.Drawing.Point(281, 20);
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(218, 25);
@@ -131,16 +149,6 @@
             this.dgvEventos.Name = "dgvEventos";
             this.dgvEventos.Size = new System.Drawing.Size(696, 281);
             this.dgvEventos.TabIndex = 7;
-            // 
-            // btnCancelarInscripcion
-            // 
-            this.btnCancelarInscripcion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancelarInscripcion.Location = new System.Drawing.Point(672, 353);
-            this.btnCancelarInscripcion.Name = "btnCancelarInscripcion";
-            this.btnCancelarInscripcion.Size = new System.Drawing.Size(69, 36);
-            this.btnCancelarInscripcion.TabIndex = 13;
-            this.btnCancelarInscripcion.Text = "Cancelar inscripcion";
-            this.btnCancelarInscripcion.UseVisualStyleBackColor = true;
             // 
             // EventosForm
             // 

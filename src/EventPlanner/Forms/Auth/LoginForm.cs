@@ -17,6 +17,7 @@ namespace EventPlanner // Espacio de nombres de la aplicación
         {
             InitializeComponent(); // Inicializa componentes
             this.Size = AppConfig.TamanoVentana; // Aplica tamaño desde config
+            
         }
 
         private void LoginForm_Load(object sender, EventArgs e) // Evento Load del formulario

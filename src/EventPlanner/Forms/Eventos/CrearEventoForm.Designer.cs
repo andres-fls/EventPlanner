@@ -68,6 +68,7 @@
             // panelBase
             // 
             this.panelBase.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.panelBase.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.panelBase.Controls.Add(this.groupBox2);
             this.panelBase.Controls.Add(this.groupBox1);
             this.panelBase.Controls.Add(this.btnCancelar);
@@ -80,6 +81,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
             this.groupBox2.Controls.Add(this.groupBox4);
             this.groupBox2.Controls.Add(this.groupBox3);
             this.groupBox2.Controls.Add(this.label2);
@@ -100,6 +102,7 @@
             // 
             this.groupBox4.Controls.Add(this.dtpHoraFin);
             this.groupBox4.Controls.Add(this.dtpFechaFin);
+            this.groupBox4.ForeColor = System.Drawing.Color.White;
             this.groupBox4.Location = new System.Drawing.Point(158, 67);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(138, 122);
@@ -128,6 +131,7 @@
             // 
             this.groupBox3.Controls.Add(this.dtpFechaIni);
             this.groupBox3.Controls.Add(this.dtpHoraIni);
+            this.groupBox3.ForeColor = System.Drawing.Color.White;
             this.groupBox3.Location = new System.Drawing.Point(6, 67);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(139, 122);
@@ -155,6 +159,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(6, 31);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(231, 20);
@@ -166,6 +171,7 @@
             this.chkActivo.AutoSize = true;
             this.chkActivo.Checked = true;
             this.chkActivo.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkActivo.ForeColor = System.Drawing.Color.White;
             this.chkActivo.Location = new System.Drawing.Point(158, 292);
             this.chkActivo.Name = "chkActivo";
             this.chkActivo.Size = new System.Drawing.Size(125, 24);
@@ -176,6 +182,7 @@
             // lblEstado
             // 
             this.lblEstado.AutoSize = true;
+            this.lblEstado.ForeColor = System.Drawing.Color.White;
             this.lblEstado.Location = new System.Drawing.Point(8, 293);
             this.lblEstado.Name = "lblEstado";
             this.lblEstado.Size = new System.Drawing.Size(60, 20);
@@ -185,6 +192,7 @@
             // lblCupo
             // 
             this.lblCupo.AutoSize = true;
+            this.lblCupo.ForeColor = System.Drawing.Color.White;
             this.lblCupo.Location = new System.Drawing.Point(8, 203);
             this.lblCupo.Name = "lblCupo";
             this.lblCupo.Size = new System.Drawing.Size(105, 20);
@@ -228,6 +236,7 @@
             // lblTipo
             // 
             this.lblTipo.AutoSize = true;
+            this.lblTipo.ForeColor = System.Drawing.Color.White;
             this.lblTipo.Location = new System.Drawing.Point(8, 247);
             this.lblTipo.Name = "lblTipo";
             this.lblTipo.Size = new System.Drawing.Size(117, 20);
@@ -236,6 +245,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
             this.groupBox1.Controls.Add(this.dtpHoraEve);
             this.groupBox1.Controls.Add(this.lblNombre);
             this.groupBox1.Controls.Add(this.lblHora);
@@ -247,7 +257,7 @@
             this.groupBox1.Controls.Add(this.lblFecha);
             this.groupBox1.Controls.Add(this.txtLugar);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(36, 48);
+            this.groupBox1.Location = new System.Drawing.Point(37, 48);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(403, 373);
             this.groupBox1.TabIndex = 19;
@@ -265,6 +275,7 @@
             // lblNombre
             // 
             this.lblNombre.AutoSize = true;
+            this.lblNombre.ForeColor = System.Drawing.Color.White;
             this.lblNombre.Location = new System.Drawing.Point(6, 31);
             this.lblNombre.Name = "lblNombre";
             this.lblNombre.Size = new System.Drawing.Size(144, 20);
@@ -274,6 +285,7 @@
             // lblHora
             // 
             this.lblHora.AutoSize = true;
+            this.lblHora.ForeColor = System.Drawing.Color.White;
             this.lblHora.Location = new System.Drawing.Point(6, 331);
             this.lblHora.Name = "lblHora";
             this.lblHora.Size = new System.Drawing.Size(44, 20);
@@ -290,6 +302,7 @@
             // lblDescripcion
             // 
             this.lblDescripcion.AutoSize = true;
+            this.lblDescripcion.ForeColor = System.Drawing.Color.White;
             this.lblDescripcion.Location = new System.Drawing.Point(6, 76);
             this.lblDescripcion.Name = "lblDescripcion";
             this.lblDescripcion.Size = new System.Drawing.Size(92, 20);
@@ -315,6 +328,7 @@
             // lblLugar
             // 
             this.lblLugar.AutoSize = true;
+            this.lblLugar.ForeColor = System.Drawing.Color.White;
             this.lblLugar.Location = new System.Drawing.Point(6, 218);
             this.lblLugar.Name = "lblLugar";
             this.lblLugar.Size = new System.Drawing.Size(50, 20);
@@ -324,6 +338,7 @@
             // lblFecha
             // 
             this.lblFecha.AutoSize = true;
+            this.lblFecha.ForeColor = System.Drawing.Color.White;
             this.lblFecha.Location = new System.Drawing.Point(6, 272);
             this.lblFecha.Name = "lblFecha";
             this.lblFecha.Size = new System.Drawing.Size(106, 20);
@@ -339,31 +354,34 @@
             // 
             // btnCancelar
             // 
+            this.btnCancelar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(176)))), ((int)(((byte)(176)))));
             this.btnCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancelar.Location = new System.Drawing.Point(572, 386);
+            this.btnCancelar.Location = new System.Drawing.Point(616, 386);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(80, 35);
             this.btnCancelar.TabIndex = 16;
             this.btnCancelar.Text = "Cancelar";
-            this.btnCancelar.UseVisualStyleBackColor = true;
+            this.btnCancelar.UseVisualStyleBackColor = false;
             this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
             // btnGuardar
             // 
+            this.btnGuardar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(208)))), ((int)(((byte)(245)))));
             this.btnGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnGuardar.Location = new System.Drawing.Point(459, 386);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(80, 35);
             this.btnGuardar.TabIndex = 15;
             this.btnGuardar.Text = "Guardar";
-            this.btnGuardar.UseVisualStyleBackColor = true;
+            this.btnGuardar.UseVisualStyleBackColor = false;
             this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(321, 20);
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(322, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(189, 25);
             this.label1.TabIndex = 0;

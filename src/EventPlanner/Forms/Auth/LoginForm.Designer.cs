@@ -46,7 +46,7 @@
             // panelBase
             // 
             this.panelBase.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.panelBase.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(245)))), ((int)(((byte)(250))))); // Color fondo azul claro
+            this.panelBase.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.panelBase.Controls.Add(this.btnSalir);
             this.panelBase.Controls.Add(this.groupBoxlogin);
             this.panelBase.Controls.Add(this.btnLogin);
@@ -60,9 +60,10 @@
             // 
             // btnSalir
             // 
-            this.btnSalir.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(40)))), ((int)(((byte)(40))))); // Color rojo
-            this.btnSalir.ForeColor = System.Drawing.Color.White; // Texto blanco
+            this.btnSalir.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(176)))), ((int)(((byte)(176)))));
+            this.btnSalir.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
             this.btnSalir.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSalir.ForeColor = System.Drawing.Color.Black;
             this.btnSalir.Location = new System.Drawing.Point(362, 333);
             this.btnSalir.Name = "btnSalir";
             this.btnSalir.Size = new System.Drawing.Size(80, 30);
@@ -73,13 +74,16 @@
             // 
             // groupBoxlogin
             // 
+            this.groupBoxlogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
             this.groupBoxlogin.Controls.Add(this.label1);
             this.groupBoxlogin.Controls.Add(this.txtPassword);
             this.groupBoxlogin.Controls.Add(this.label2);
             this.groupBoxlogin.Controls.Add(this.txtUsuario);
-            this.groupBoxlogin.Location = new System.Drawing.Point(179, 77);
+            this.groupBoxlogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBoxlogin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+            this.groupBoxlogin.Location = new System.Drawing.Point(179, 76);
             this.groupBoxlogin.Name = "groupBoxlogin";
-            this.groupBoxlogin.Size = new System.Drawing.Size(446, 157);
+            this.groupBoxlogin.Size = new System.Drawing.Size(446, 158);
             this.groupBoxlogin.TabIndex = 20;
             this.groupBoxlogin.TabStop = false;
             // 
@@ -87,6 +91,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(16, 31);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(126, 20);
@@ -105,6 +110,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(16, 103);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(92, 20);
@@ -122,9 +128,10 @@
             // 
             // btnLogin
             // 
-            this.btnLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(120)))), ((int)(((byte)(70))))); // Color verde
-            this.btnLogin.ForeColor = System.Drawing.Color.White; // Texto blanco
+            this.btnLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(208)))), ((int)(((byte)(245)))));
+            this.btnLogin.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btnLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLogin.ForeColor = System.Drawing.Color.Black;
             this.btnLogin.Location = new System.Drawing.Point(362, 265);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(80, 30);
@@ -136,7 +143,10 @@
             // linkRegistro
             // 
             this.linkRegistro.AutoSize = true;
+            this.linkRegistro.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.linkRegistro.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkRegistro.ForeColor = System.Drawing.Color.White;
+            this.linkRegistro.LinkColor = System.Drawing.Color.MediumTurquoise;
             this.linkRegistro.Location = new System.Drawing.Point(424, 409);
             this.linkRegistro.Name = "linkRegistro";
             this.linkRegistro.Size = new System.Drawing.Size(107, 18);
@@ -149,6 +159,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.White;
             this.label5.Location = new System.Drawing.Point(271, 409);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(147, 20);
@@ -159,6 +170,7 @@
             // 
             this.txtInicio.AutoSize = true;
             this.txtInicio.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtInicio.ForeColor = System.Drawing.Color.White;
             this.txtInicio.Location = new System.Drawing.Point(298, 33);
             this.txtInicio.Name = "txtInicio";
             this.txtInicio.Size = new System.Drawing.Size(209, 29);
@@ -170,8 +182,11 @@
             this.AcceptButton = this.btnLogin;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ControlBox = false;
             this.Controls.Add(this.panelBase);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "EventPlanner";
