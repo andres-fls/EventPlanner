@@ -1,6 +1,6 @@
 /* ============================
    CREAR BASE DE DATOS
-============================ */
+=========================== */
 
 CREATE DATABASE EventPlannerDB;
 GO
@@ -11,33 +11,32 @@ GO
 
 /* ============================
    TABLA USUARIO (LOGIN)
-============================ */
+=========================== */
 
 CREATE TABLE Usuario(
     idUsuario INT IDENTITY(1,1) PRIMARY KEY,
     nombreUsuario VARCHAR(50) NOT NULL UNIQUE,
-    passwordUsuario VARCHAR(50) NOT NULL,
+    passwordUsuario VARCHAR(255) NOT NULL,
     rolUsuario VARCHAR(20) NOT NULL
 );
-GO
 
 
 /* ============================
    TABLA PROGRAMA
-============================ */
+=========================== */
 
 CREATE TABLE Programa(
-    codigoPrograma INT PRIMARY KEY,
+    idPrograma INT IDENTITY(1,1) PRIMARY KEY,
+    codigoPrograma INT NOT NULL UNIQUE,
     nombrePrograma VARCHAR(40) NOT NULL,
     duracionPrograma VARCHAR(20) NOT NULL,
     nivelPrograma VARCHAR(20) NOT NULL
 );
-GO
 
 
 /* ============================
    TABLA FICHA
-============================ */
+=========================== */
 
 CREATE TABLE Ficha(
     codigoFicha INT PRIMARY KEY,
@@ -48,12 +47,11 @@ CREATE TABLE Ficha(
     FOREIGN KEY (codigoPrograma)
         REFERENCES Programa(codigoPrograma)
 );
-GO
 
 
 /* ============================
    TABLA APRENDIZ
-============================ */
+=========================== */
 
 CREATE TABLE Aprendiz(
     idAprendiz INT IDENTITY(1,1) PRIMARY KEY,
@@ -73,33 +71,11 @@ CREATE TABLE Aprendiz(
     FOREIGN KEY (idUsuario)
         REFERENCES Usuario(idUsuario)
 );
-GO
-
-
-/* ============================
-   TABLA EVENTO
-============================ */
-
-CREATE TABLE Evento(
-    idEvento INT IDENTITY(1,1) PRIMARY KEY,
-    nombreEvento VARCHAR(50) NOT NULL,
-    tipoEvento VARCHAR(30) NOT NULL,
-    lugarEvento VARCHAR(50) NOT NULL,
-    fechaEvento DATE NOT NULL,
-    duracionEvento TIME NOT NULL,
-    estadoEvento VARCHAR(20) NOT NULL,
-
-    idUsuarioCreador INT NOT NULL,
-
-    FOREIGN KEY (idUsuarioCreador)
-        REFERENCES Usuario(idUsuario)
-);
-GO
 
 
 /* ============================
    TABLA GRUPO (OPCIONAL)
-============================ */
+=========================== */
 
 CREATE TABLE Grupo(
     idGrupo INT IDENTITY(1,1) PRIMARY KEY,
@@ -109,13 +85,40 @@ GO
 
 
 /* ============================
+   TABLA EVENTO
+=========================== */
+
+CREATE TABLE Evento(
+    idEvento INT IDENTITY(1,1) PRIMARY KEY,
+    nombreEvento VARCHAR(50) NOT NULL,
+    tipoEvento VARCHAR(30) NOT NULL,
+    lugarEvento VARCHAR(50) NOT NULL,
+    descripcionEvento VARCHAR(MAX),
+    
+    fechaInicioEvento DATETIME NOT NULL,
+    fechaFinEvento DATETIME NOT NULL,
+    fechaInicioInscripcion DATETIME NOT NULL,
+    fechaFinInscripcion DATETIME NOT NULL,
+    
+    cupoMaximo INT NOT NULL,
+    activo BIT NOT NULL DEFAULT 1,
+    
+    idUsuarioCreador INT NOT NULL,
+
+    FOREIGN KEY (idUsuarioCreador)
+        REFERENCES Usuario(idUsuario)
+);
+GO
+
+
+/* ============================
    TABLA INSCRIPCION
-============================ */
+=========================== */
 
 CREATE TABLE Inscripcion(
     idInscripcion INT IDENTITY(1,1) PRIMARY KEY,
-
-    fechaInscripcion DATE NOT NULL,
+    fechaInscripcion DATETIME NOT NULL DEFAULT GETDATE(),
+    tipoInscripcion VARCHAR(30) NOT NULL,
     modalidad VARCHAR(20) NOT NULL,
     estadoInscripcion VARCHAR(20) NOT NULL DEFAULT 'Activo',
 
