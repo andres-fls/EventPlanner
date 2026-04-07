@@ -34,7 +34,7 @@ namespace EventPlanner // Espacio de nombres de la aplicación
             // Si el usuario es admin, ocultar el botón de eventos (solo para aprendices)
             if (rolUsuario == "Admin") // Verifica rol admin
             {
-                btnEventos.Visible = false; // Oculta botón eventos
+                
             }
             // Si el usuario es aprendiz, ocultar las opciones administrativas
             else if (rolUsuario == "Aprendiz") // Verifica rol aprendiz

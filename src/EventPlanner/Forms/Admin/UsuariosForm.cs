@@ -10,6 +10,9 @@
 using System; // Importa base de .NET
 using System.Windows.Forms; // Importa Windows Forms
 using EventPlanner.Utils; // Importa utilidades
+using EventPlanner.Services;
+using EventPlanner.Models;
+using System.Collections.Generic;
 
 namespace EventPlanner
 {
@@ -17,6 +20,18 @@ namespace EventPlanner
     {
         // Almacena el rol del usuario logueado (aunque no se usa en este prototipo)
         private string rolUsuario;
+
+        private InscripcionService inscripcionService = new InscripcionService(); // Servicio para manejar inscripciones
+
+        private string ObtenerValorCelda(DataGridViewRow fila, int indice)
+        {
+            var valor = fila.Cells[indice].Value;
+
+            if (valor == null || string.IsNullOrWhiteSpace(valor.ToString()))
+                return "Campo vacío";
+
+            return valor.ToString();
+        }
 
         // Constructor: recibe el rol y aplica tamaño de ventana desde configuración
         public UsuariosForm(string rol)
@@ -45,6 +60,8 @@ namespace EventPlanner
         {
             dgvInscripciones.Columns.Clear(); // Limpia columnas existentes
 
+            dgvInscripciones.AllowUserToAddRows = false; // No permite agregar filas manualmente
+
             // Agrega columnas manualmente (no se usa DataBinding)
             dgvInscripciones.Columns.Add("Nombre", "Nombre");
             dgvInscripciones.Columns.Add("Evento", "Evento");
@@ -72,12 +89,19 @@ namespace EventPlanner
         // EN PRODUCCIÓN: Debería obtener datos reales desde la base de datos usando DAOs/Services.
         private void CargarDatos()
         {
-            dgvInscripciones.Rows.Clear(); // Limpia filas existentes
+            dgvInscripciones.Rows.Clear();
 
-            // Agrega filas con datos de prueba
-            dgvInscripciones.Rows.Add("Juan Pérez", "Hackathon", "Presencial", "Activo");
-            dgvInscripciones.Rows.Add("María Gómez", "Feria Tech", "Virtual", "Cancelado");
-            dgvInscripciones.Rows.Add("Carlos López", "Hackathon", "Presencial", "Activo");
+            var inscripciones = inscripcionService.ObtenerInscripcionesConDetalle();
+
+            foreach (var ins in inscripciones)
+            {
+                dgvInscripciones.Rows.Add(
+                    ins.nombreAprendiz,
+                    ins.nombreEvento,
+                    ins.modalidad,
+                    ins.estadoInscripcion
+                );
+            }
         }
 
         // Botón "Cargar": refresca los datos (vuelve a cargar los mismos datos de ejemplo)
@@ -97,22 +121,32 @@ namespace EventPlanner
                 return;
             }
 
-            // Obtiene los valores de las celdas de la fila seleccionada
-            string nombre = dgvInscripciones.CurrentRow.Cells[0].Value.ToString();
-            string evento = dgvInscripciones.CurrentRow.Cells[1].Value.ToString();
-            string modalidad = dgvInscripciones.CurrentRow.Cells[2].Value.ToString();
-            string estado = dgvInscripciones.CurrentRow.Cells[3].Value.ToString();
+            var fila = dgvInscripciones.CurrentRow;
 
-            // Muestra un cuadro de diálogo con los detalles
-            MessageBox.Show($"Nombre: {nombre}\nEvento: {evento}\nModalidad: {modalidad}\nEstado: {estado}", "Detalle de Inscripción");
+            string nombre = ObtenerValorCelda(fila, 0);
+            string evento = ObtenerValorCelda(fila, 1);
+            string modalidad = ObtenerValorCelda(fila, 2);
+            string estado = ObtenerValorCelda(fila, 3);
+
+            MessageBox.Show(
+                $"Nombre: {nombre}\n" +
+                $"Evento: {evento}\n" +
+                $"Modalidad: {modalidad}\n" +
+                $"Estado: {estado}",
+                "Detalle de Inscripción"
+            );
         }
-
         // Botón "Activar": cambia el estado de la inscripción a "Activo" (solo visual)
         // FUTURO: Debería llamar a un método del DAO para persistir el cambio.
         private void btnActivar_Click(object sender, EventArgs e)
         {
-            if (dgvInscripciones.CurrentRow == null)
+            if (dgvInscripciones.CurrentRow == null ||
+                dgvInscripciones.CurrentRow.IsNewRow ||
+                dgvInscripciones.CurrentRow.Cells[0].Value == null)
+            {
+                MessageBox.Show("Seleccione un registro válido.");
                 return;
+            }
 
             DialogResult r = MessageBox.Show(
                 "¿Desea ACTIVAR esta inscripción?",
@@ -136,8 +170,13 @@ namespace EventPlanner
         // FUTURO: Debería persistir el cambio en la base de datos.
         private void btnDesactivar_Click(object sender, EventArgs e)
         {
-            if (dgvInscripciones.CurrentRow == null)
+            if (dgvInscripciones.CurrentRow == null ||
+                dgvInscripciones.CurrentRow.IsNewRow ||
+                dgvInscripciones.CurrentRow.Cells[0].Value == null)
+            {
+                MessageBox.Show("Seleccione un registro válido.");
                 return;
+            }
 
             DialogResult r = MessageBox.Show(
                 "¿Desea DESACTIVAR esta inscripción?",
