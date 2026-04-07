@@ -132,24 +132,3 @@ CREATE TABLE Inscripcion(
     FOREIGN KEY (idEvento)
         REFERENCES Evento(idEvento),
 
--- 7. Tabla de Inscripciones
-CREATE TABLE Inscripcion (
-    IdInscripcion INT PRIMARY KEY IDENTITY(1,1),
-    FechaInscripcion DATETIME DEFAULT GETDATE(),
-    TipoInscripcion VARCHAR(50),
-    Modalidad VARCHAR(20), -- Individual, Equipo
-    EstadoInscripcion VARCHAR(20) DEFAULT 'Activo', -- Activo, Cancelado
-    IdAprendiz INT NOT NULL,
-    IdEvento INT NOT NULL,
-    IdGrupo INT NULL,
-    FOREIGN KEY (IdAprendiz) REFERENCES Aprendiz(IdAprendiz),
-    FOREIGN KEY (IdEvento) REFERENCES Evento(IdEvento),
-    FOREIGN KEY (IdGrupo) REFERENCES Grupo(IdGrupo)
-);
-GO
-
-insert into Usuario(nombreUsuario, passwordUsuario, rolUsuario) values 
-('admin', 'admin123', 'Administrador');
-insert into Aprendiz(cedulaAprendiz, nombreAprendiz, edadAprendiz, generoAprendiz, correoAprendiz, telefonoAprendiz, codigoFicha, idUsuario) values 
-('1234567890', 'Juan Perez', 25, 'Masculino', 'juandavid@gmail.com', '3217483848', 101, 1);
-
