@@ -132,3 +132,7 @@ CREATE TABLE Inscripcion(
     FOREIGN KEY (idEvento)
         REFERENCES Evento(idEvento),
 
+    FOREIGN KEY (idGrupo)
+        REFERENCES Grupo(idGrupo)
+);
+GO
