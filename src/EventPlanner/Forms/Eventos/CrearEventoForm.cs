@@ -33,29 +33,49 @@ namespace EventPlanner // Define el espacio de nombres de la aplicación
         // Al cargar el formulario, configura validaciones y, si es edición, carga los datos del evento
         private void CrearEventoForm_Load(object sender, EventArgs e) // Evento Load del formulario
         {
-            // Restringe la entrada en txtNombre a solo letras (usando el validador)
-            txtNombre.KeyPress += Validator.SoloLetrasKeyPress; // Agrega evento KeyPress para validación
-            // Inicializa el ComboBox sin selección
-            cmbTipo.SelectedIndex = -1; // Establece índice -1 para no selección
+            // ===============================
+            // VALIDACIONES INPUT
+            // ===============================
+            txtNombre.KeyPress += Validator.SoloLetrasKeyPress;
 
-            // Si estamos en modo edición, cargar los datos del evento en los controles
-            if (_eventoEditar != null) // Verifica si hay evento para editar
+            // ===============================
+            // CONFIGURAR COMBOS (LIMPIAR PRIMERO)
+            // ===============================
+
+            cmbTipoEvento.Items.Clear();
+            cmbTipoEvento.Items.Add("Individual");
+            cmbTipoEvento.Items.Add("Grupal");
+            cmbTipoEvento.SelectedIndex = -1;
+
+            cmbCategEvento.Items.Clear();
+            cmbCategEvento.Items.Add("Academico");
+            cmbCategEvento.Items.Add("Deportivo");
+            cmbCategEvento.Items.Add("Cultural");
+            cmbCategEvento.SelectedIndex = -1;
+
+            // ===============================
+            // MODO EDICION
+            // ===============================
+            if (_eventoEditar != null)
             {
-                this.Text = "Editar Evento"; // Cambia el título de la ventana
-                txtNombre.Text = _eventoEditar.nombreEvento; // Carga nombre
-                cmbTipo.Text = _eventoEditar.tipoEvento; // Carga tipo
-                txtLugar.Text = _eventoEditar.lugarEvento; // Carga lugar
-                txtDescripcion.Text = _eventoEditar.descripcionEvento; // Carga descripción
-                // Fecha del evento: separamos fecha y hora
-                dtpFechaEve.Value = _eventoEditar.fechaInicioEvento.Date; // Carga fecha del evento
-                dtpHoraEve.Value = _eventoEditar.fechaInicioEvento; // Carga hora del evento
-                // Inicio inscripción
-                dtpFechaIni.Value = _eventoEditar.fechaInicioInscripcion.Date; // Carga fecha inicio inscripción
-                dtpHoraIni.Value = _eventoEditar.fechaInicioInscripcion; // Carga hora inicio inscripción
-                // Fin inscripción
-                dtpFechaFin.Value = _eventoEditar.fechaFinInscripcion.Date; // Carga fecha fin inscripción
-                dtpHoraFin.Value = _eventoEditar.fechaFinInscripcion; // Carga hora fin inscripción
-                numCupo.Value = _eventoEditar.cupoMaximo; // Carga cupo máximo
+                this.Text = "Editar Evento";
+
+                txtNombre.Text = _eventoEditar.nombreEvento;
+                cmbTipoEvento.SelectedItem = _eventoEditar.tipoEvento;
+                cmbCategEvento.SelectedItem = _eventoEditar.categoriaEvento;
+                txtLugar.Text = _eventoEditar.lugarEvento;
+                txtDescripcion.Text = _eventoEditar.descripcionEvento;
+
+                dtpFechaEve.Value = _eventoEditar.fechaInicioEvento;
+                dtpHoraEve.Value = _eventoEditar.fechaInicioEvento;
+
+                dtpFechaIni.Value = _eventoEditar.fechaInicioInscripcion;
+                dtpHoraIni.Value = _eventoEditar.fechaInicioInscripcion;
+
+                dtpFechaFin.Value = _eventoEditar.fechaFinInscripcion;
+                dtpHoraFin.Value = _eventoEditar.fechaFinInscripcion;
+
+                numCupo.Value = _eventoEditar.cupoMaximo;
             }
         }
 
@@ -68,79 +88,100 @@ namespace EventPlanner // Define el espacio de nombres de la aplicación
         // Botón Guardar: valida los datos, crea/actualiza el evento y lo guarda en la BD
         private void btnGuardar_Click(object sender, EventArgs e) // Evento Click del botón Guardar
         {
-            // Validación: campos de texto no vacíos
-            if (Validator.CampoVacio(txtNombre, "Nombre del evento")) return; // Valida nombre no vacío
-            if (Validator.CampoVacio(txtLugar, "Lugar")) return; // Valida lugar no vacío
+            // =============================
+            // VALIDACIONES BASICAS
+            // =============================
 
-            // Validación: tipo de evento seleccionado
-            if (cmbTipo.SelectedIndex == -1) // Verifica selección en combo
+            if (Validator.CampoVacio(txtNombre, "Nombre del evento")) return;
+            if (Validator.CampoVacio(txtLugar, "Lugar")) return;
+
+            if (cmbTipo.SelectedIndex == -1)
             {
-                MessageBox.Show("Seleccione un tipo de evento."); // Muestra mensaje de error
-                return; // Sale de la función
+                MessageBox.Show("Seleccione un tipo de evento.");
+                return;
             }
 
-            // Combinar fecha y hora para cada campo DateTime
-            DateTime fechaHoraEvento = dtpFechaEve.Value.Date + dtpHoraEve.Value.TimeOfDay; // Combina fecha y hora evento
-            DateTime fechaHoraIniInscripcion = dtpFechaIni.Value.Date + dtpHoraIni.Value.TimeOfDay; // Combina fecha y hora inicio
-            DateTime fechaHoraFinInscripcion = dtpFechaFin.Value.Date + dtpHoraFin.Value.TimeOfDay; // Combina fecha y hora fin
+            // =============================
+            // COMBINAR FECHA Y HORA
+            // =============================
 
-            // Validación: la fecha de fin de inscripción debe ser posterior a la de inicio
-            if (fechaHoraFinInscripcion <= fechaHoraIniInscripcion) // Verifica lógica de fechas
+            DateTime fechaHoraEvento =
+                dtpFechaEve.Value.Date + dtpHoraEve.Value.TimeOfDay;
+
+            DateTime fechaHoraIniInscripcion =
+                dtpFechaIni.Value.Date + dtpHoraIni.Value.TimeOfDay;
+
+            DateTime fechaHoraFinInscripcion =
+                dtpFechaFin.Value.Date + dtpHoraFin.Value.TimeOfDay;
+
+            // =============================
+            // VALIDACIONES DE FECHA
+            // =============================
+
+            // ❌ No permitir eventos pasados
+            if (fechaHoraEvento < DateTime.Now)
             {
-                MessageBox.Show("La fecha de cierre de inscripciones debe ser posterior a la de inicio."); // Muestra error
-                return; // Sale
+                MessageBox.Show("No puede crear eventos en fechas pasadas.");
+                return;
             }
 
-            // Validación: las inscripciones deben cerrarse antes del evento
-            if (fechaHoraFinInscripcion >= fechaHoraEvento) // Verifica que cierre antes del evento
+            if (fechaHoraFinInscripcion <= fechaHoraIniInscripcion)
             {
-                MessageBox.Show("Las inscripciones deben cerrarse antes de la fecha del evento."); // Muestra error
-                return; // Sale
+                MessageBox.Show("La fecha de cierre debe ser posterior al inicio.");
+                return;
             }
 
-            try // Bloque try para manejo de excepciones
+            if (fechaHoraFinInscripcion >= fechaHoraEvento)
             {
-                // Crear objeto Evento con los datos del formulario
-                Evento evento = new Evento() // Instancia nuevo objeto Evento
+                MessageBox.Show("Las inscripciones deben cerrarse antes del evento.");
+                return;
+            }
+
+            // =============================
+            // VALIDACION HORARIO (7AM - 7PM)
+            // =============================
+
+            int horaEvento = fechaHoraEvento.Hour;
+
+            if (horaEvento < 7 || horaEvento >= 19)
+            {
+                MessageBox.Show("Los eventos solo pueden realizarse entre 7:00 AM y 7:00 PM.");
+                return;
+            }
+
+            // =============================
+            // CREAR EVENTO
+            // =============================
+
+            try
+            {
+                Evento evento = new Evento()
                 {
-                    nombreEvento = txtNombre.Text.Trim(), // Asigna nombre
-                    tipoEvento = cmbTipo.SelectedItem.ToString(), // Asigna tipo
-                    lugarEvento = txtLugar.Text.Trim(), // Asigna lugar
-                    descripcionEvento = txtDescripcion.Text.Trim(), // Asigna descripción
+                    nombreEvento = txtNombre.Text.Trim(),
+                    tipoEvento = cmbTipo.SelectedItem?.ToString(),
+                    lugarEvento = txtLugar.Text.Trim(),
+                    descripcionEvento = txtDescripcion.Text.Trim(),
 
-                    fechaInicioEvento = fechaHoraEvento, // Asigna fecha inicio evento
-                    fechaFinEvento = fechaHoraEvento,  // Asigna fecha fin evento (igual a inicio)
+                    fechaInicioEvento = fechaHoraEvento,
+                    fechaFinEvento = fechaHoraEvento,
 
-                    fechaInicioInscripcion = fechaHoraIniInscripcion, // Asigna fecha inicio inscripción
-                    fechaFinInscripcion = fechaHoraFinInscripcion, // Asigna fecha fin inscripción
+                    fechaInicioInscripcion = fechaHoraIniInscripcion,
+                    fechaFinInscripcion = fechaHoraFinInscripcion,
 
-                    cupoMaximo = (int)numCupo.Value, // Asigna cupo máximo
-                    activo = true,                      // Establece activo por defecto
-                    idUsuarioCreador = Session.IdUsuario // Asigna ID del creador
+                    cupoMaximo = (int)numCupo.Value,
+                    activo = true
                 };
 
-                EventoService service = new EventoService(); // Instancia servicio de eventos
+                EventoService service = new EventoService();
 
-                if (_eventoEditar == null) // Verifica si es creación
-                {
-                    // Modo creación: llama al servicio para insertar
-                    service.CrearEvento(evento); // Crea evento
-                    MessageBox.Show("Evento guardado exitosamente."); // Muestra éxito
-                }
-                else // Modo edición
-                {
-                    // Modo edición: asigna el ID y el usuario creador original, luego actualiza
-                    evento.idEvento = _eventoEditar.idEvento; // Asigna ID
-                    evento.idUsuarioCreador = _eventoEditar.idUsuarioCreador; // Asigna creador original
-                    service.ActualizarEvento(evento); // Actualiza evento
-                    MessageBox.Show("Evento actualizado exitosamente."); // Muestra éxito
-                }
+                service.CrearEvento(evento);
 
-                this.Close(); // Cierra el formulario después de guardar
+                MessageBox.Show("Evento creado correctamente.");
+
             }
-            catch (Exception ex) // Captura excepciones
+            catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message); // Muestra error
+                MessageBox.Show(ex.Message);
             }
         }
     }

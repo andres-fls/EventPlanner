@@ -57,6 +57,10 @@
             this.btnCancelar = new System.Windows.Forms.Button();
             this.btnGuardar = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.Tipo = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cmbTipoEvento = new System.Windows.Forms.ComboBox();
+            this.cmbCategEvento = new System.Windows.Forms.ComboBox();
             this.panelBase.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -246,6 +250,10 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+            this.groupBox1.Controls.Add(this.cmbCategEvento);
+            this.groupBox1.Controls.Add(this.cmbTipoEvento);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.Tipo);
             this.groupBox1.Controls.Add(this.dtpHoraEve);
             this.groupBox1.Controls.Add(this.lblNombre);
             this.groupBox1.Controls.Add(this.lblHora);
@@ -266,7 +274,7 @@
             // dtpHoraEve
             // 
             this.dtpHoraEve.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dtpHoraEve.Location = new System.Drawing.Point(156, 326);
+            this.dtpHoraEve.Location = new System.Drawing.Point(243, 326);
             this.dtpHoraEve.Name = "dtpHoraEve";
             this.dtpHoraEve.ShowUpDown = true;
             this.dtpHoraEve.Size = new System.Drawing.Size(121, 26);
@@ -286,7 +294,7 @@
             // 
             this.lblHora.AutoSize = true;
             this.lblHora.ForeColor = System.Drawing.Color.White;
-            this.lblHora.Location = new System.Drawing.Point(6, 331);
+            this.lblHora.Location = new System.Drawing.Point(275, 296);
             this.lblHora.Name = "lblHora";
             this.lblHora.Size = new System.Drawing.Size(44, 20);
             this.lblHora.TabIndex = 5;
@@ -312,7 +320,7 @@
             // dtpFechaEve
             // 
             this.dtpFechaEve.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpFechaEve.Location = new System.Drawing.Point(156, 267);
+            this.dtpFechaEve.Location = new System.Drawing.Point(41, 326);
             this.dtpFechaEve.Name = "dtpFechaEve";
             this.dtpFechaEve.Size = new System.Drawing.Size(121, 26);
             this.dtpFechaEve.TabIndex = 10;
@@ -322,14 +330,14 @@
             this.txtDescripcion.Location = new System.Drawing.Point(156, 76);
             this.txtDescripcion.Multiline = true;
             this.txtDescripcion.Name = "txtDescripcion";
-            this.txtDescripcion.Size = new System.Drawing.Size(241, 113);
+            this.txtDescripcion.Size = new System.Drawing.Size(241, 67);
             this.txtDescripcion.TabIndex = 9;
             // 
             // lblLugar
             // 
             this.lblLugar.AutoSize = true;
             this.lblLugar.ForeColor = System.Drawing.Color.White;
-            this.lblLugar.Location = new System.Drawing.Point(6, 218);
+            this.lblLugar.Location = new System.Drawing.Point(6, 166);
             this.lblLugar.Name = "lblLugar";
             this.lblLugar.Size = new System.Drawing.Size(50, 20);
             this.lblLugar.TabIndex = 3;
@@ -339,7 +347,7 @@
             // 
             this.lblFecha.AutoSize = true;
             this.lblFecha.ForeColor = System.Drawing.Color.White;
-            this.lblFecha.Location = new System.Drawing.Point(6, 272);
+            this.lblFecha.Location = new System.Drawing.Point(44, 296);
             this.lblFecha.Name = "lblFecha";
             this.lblFecha.Size = new System.Drawing.Size(106, 20);
             this.lblFecha.TabIndex = 4;
@@ -347,7 +355,7 @@
             // 
             // txtLugar
             // 
-            this.txtLugar.Location = new System.Drawing.Point(156, 215);
+            this.txtLugar.Location = new System.Drawing.Point(156, 163);
             this.txtLugar.Name = "txtLugar";
             this.txtLugar.Size = new System.Drawing.Size(241, 26);
             this.txtLugar.TabIndex = 11;
@@ -386,6 +394,49 @@
             this.label1.Size = new System.Drawing.Size(189, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "CREAR EVENTO";
+            // 
+            // Tipo
+            // 
+            this.Tipo.AutoSize = true;
+            this.Tipo.ForeColor = System.Drawing.Color.White;
+            this.Tipo.Location = new System.Drawing.Point(80, 216);
+            this.Tipo.Name = "Tipo";
+            this.Tipo.Size = new System.Drawing.Size(39, 20);
+            this.Tipo.TabIndex = 13;
+            this.Tipo.Text = "Tipo";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(265, 216);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(78, 20);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Categoria";
+            // 
+            // cmbTipoEvento
+            // 
+            this.cmbTipoEvento.FormattingEnabled = true;
+            this.cmbTipoEvento.Items.AddRange(new object[] {
+            "Individual",
+            "Grupal"});
+            this.cmbTipoEvento.Location = new System.Drawing.Point(41, 244);
+            this.cmbTipoEvento.Name = "cmbTipoEvento";
+            this.cmbTipoEvento.Size = new System.Drawing.Size(121, 28);
+            this.cmbTipoEvento.TabIndex = 15;
+            // 
+            // cmbCategEvento
+            // 
+            this.cmbCategEvento.FormattingEnabled = true;
+            this.cmbCategEvento.Items.AddRange(new object[] {
+            "Deportivo",
+            "Cultural",
+            "Academico"});
+            this.cmbCategEvento.Location = new System.Drawing.Point(243, 244);
+            this.cmbCategEvento.Name = "cmbCategEvento";
+            this.cmbCategEvento.Size = new System.Drawing.Size(121, 28);
+            this.cmbCategEvento.TabIndex = 16;
             // 
             // CrearEventoForm
             // 
@@ -444,5 +495,9 @@
         private System.Windows.Forms.DateTimePicker dtpFechaIni;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label Tipo;
+        private System.Windows.Forms.ComboBox cmbCategEvento;
+        private System.Windows.Forms.ComboBox cmbTipoEvento;
     }
 }

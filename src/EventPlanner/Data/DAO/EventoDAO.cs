@@ -32,12 +32,12 @@ namespace EventPlanner.DAO
 
                 // Consulta de inserción con todos los campos de la tabla Evento
                 string query = @"INSERT INTO Evento
-                (nombreEvento, tipoEvento, lugarEvento, descripcionEvento,
+                (nombreEvento, tipoEvento, categoriaEvento, lugarEvento, descripcionEvento,
                  fechaInicioEvento, fechaFinEvento,
                  fechaInicioInscripcion, fechaFinInscripcion,
                  cupoMaximo, activo, idUsuarioCreador)
                 VALUES
-                (@nombre, @tipo, @lugar, @descripcion,
+                (@nombre, @tipo,@categoria, @lugar, @descripcion,
                  @fechaInicio, @fechaFin,
                  @inicioInscripcion, @finInscripcion,
                  @cupo, @activo, @usuario)";
@@ -47,6 +47,7 @@ namespace EventPlanner.DAO
                     // Asignación de parámetros con los valores del objeto evento
                     cmd.Parameters.AddWithValue("@nombre", evento.nombreEvento);
                     cmd.Parameters.AddWithValue("@tipo", evento.tipoEvento);
+                    cmd.Parameters.AddWithValue("@categoria", evento.categoriaEvento);
                     cmd.Parameters.AddWithValue("@lugar", evento.lugarEvento);
                     cmd.Parameters.AddWithValue("@descripcion", evento.descripcionEvento);
 
@@ -92,6 +93,7 @@ namespace EventPlanner.DAO
                             idEvento = Convert.ToInt32(reader["idEvento"]),
                             nombreEvento = reader["nombreEvento"].ToString(),
                             tipoEvento = reader["tipoEvento"].ToString(),
+                            categoriaEvento = reader["categoriaEvento"].ToString(),
                             lugarEvento = reader["lugarEvento"].ToString(),
                             descripcionEvento = reader["descripcionEvento"].ToString(),
 
@@ -132,6 +134,7 @@ namespace EventPlanner.DAO
                 string query = @"UPDATE Evento SET
                         nombreEvento = @nombre,
                         tipoEvento = @tipo,
+                        categoriaEvento = @categoria,
                         lugarEvento = @lugar,
                         descripcionEvento = @descripcion,
                         fechaInicioEvento = @fechaInicio,
@@ -145,6 +148,7 @@ namespace EventPlanner.DAO
                 {
                     cmd.Parameters.AddWithValue("@nombre", evento.nombreEvento);
                     cmd.Parameters.AddWithValue("@tipo", evento.tipoEvento);
+                    cmd.Parameters.AddWithValue("@categoria", evento.categoriaEvento);
                     cmd.Parameters.AddWithValue("@lugar", evento.lugarEvento);
                     cmd.Parameters.AddWithValue("@descripcion", evento.descripcionEvento);
                     cmd.Parameters.AddWithValue("@fechaInicio", evento.fechaInicioEvento);
@@ -231,6 +235,7 @@ namespace EventPlanner.DAO
                                 idEvento = Convert.ToInt32(reader["idEvento"]),
                                 nombreEvento = reader["nombreEvento"].ToString(),
                                 tipoEvento = reader["tipoEvento"].ToString(),
+                                categoriaEvento = reader["categoriaEvento"].ToString(),
                                 lugarEvento = reader["lugarEvento"].ToString(),
                                 fechaInicioEvento = Convert.ToDateTime(reader["fechaInicioEvento"]),
                                 cupoMaximo = Convert.ToInt32(reader["cupoMaximo"]),

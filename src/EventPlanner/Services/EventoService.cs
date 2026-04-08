@@ -15,6 +15,12 @@ using EventPlanner.Models;
 
 namespace EventPlanner.Services
 {
+    public static class tipoEvento
+    {
+        public const string GRUPAL = "Grupal";
+        public const string INDIVIDUAL = "Individual";
+
+    }
     public class EventoService
     {
         // Instancia del DAO para acceder a los datos de evento
@@ -43,6 +49,22 @@ namespace EventPlanner.Services
             return eventoDAO.ObtenerEventos();
         }
 
+
+        public List<Evento> ObtenerEventosDisponibles()
+        {
+            List<Evento> eventos = eventoDAO.ObtenerEventos();
+            List<Evento> eventosValidos = new List<Evento>();
+            foreach (var evento in eventos)
+
+            {
+                if (evento.fechaInicioEvento >= DateTime.Now.Date)
+                {
+                    eventosValidos.Add(evento);
+                }
+            }
+            return eventosValidos;
+
+        }
         // ==========================
         // DESACTIVAR EVENTO (SOFT DELETE)
         // ==========================
@@ -60,14 +82,60 @@ namespace EventPlanner.Services
         // Método privado que verifica que el evento cumpla con las reglas del negocio.
         private void ValidarEvento(Evento evento)
         {
-            // Validación: la fecha de cierre de inscripción no puede ser anterior a la fecha de inicio
+            if (evento == null)
+                throw new Exception("El evento no puede ser nulo.");
+
+            // --------------------------
+            // Validar nombre
+            // --------------------------
+            if (string.IsNullOrWhiteSpace(evento.nombreEvento))
+                throw new Exception("El nombre del evento es obligatorio.");
+
+            // --------------------------
+            // Validar fecha del evento
+            // (No permitir fechas pasadas)
+            // --------------------------
+            if (evento.fechaInicioEvento.Date < DateTime.Now.Date)
+                throw new Exception("No se puede crear un evento en fechas anteriores.");
+
+            // --------------------------
+            // Validar horario permitido
+            // (7 AM - 7 PM)
+            // --------------------------
+            TimeSpan hora = evento.fechaInicioEvento.TimeOfDay;
+
+            if (hora < new TimeSpan(7, 0, 0) ||
+                hora > new TimeSpan(19, 0, 0))
+            {
+                throw new Exception("Los eventos solo pueden realizarse entre 7am y 7pm.");
+            }
+
+            // --------------------------
+            // Validar rango inscripción
+            // --------------------------
             if (evento.fechaFinInscripcion < evento.fechaInicioInscripcion)
                 throw new Exception("Rango de inscripción inválido.");
 
-            // Validación: el cupo máximo no puede ser negativo
+            // --------------------------
+            // Validar cupo
+            // --------------------------
             if (evento.cupoMaximo < 0)
                 throw new Exception("El cupo no puede ser negativo.");
+
+            // --------------------------
+            // ✅ VALIDAR TIPO EVENTO (NUEVO)
+            // --------------------------
+            if (string.IsNullOrWhiteSpace(evento.tipoEvento))
+                throw new Exception("Debe seleccionar el tipo de evento.");
+
+            if (evento.tipoEvento != tipoEvento.GRUPAL &&
+                evento.tipoEvento != tipoEvento.INDIVIDUAL)
+            {
+                throw new Exception("Tipo de evento inválido.");
+            }
         }
+
+        
 
         // ==========================
         // ACTUALIZAR EVENTO
