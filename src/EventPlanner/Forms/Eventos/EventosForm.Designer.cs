@@ -69,6 +69,7 @@
             this.btnCancelarInscripcion.TabIndex = 13;
             this.btnCancelarInscripcion.Text = "Cancelar inscripcion";
             this.btnCancelarInscripcion.UseVisualStyleBackColor = false;
+            this.btnCancelarInscripcion.Click += new System.EventHandler(this.btnCancelarInscripcion_Click_1);
             // 
             // btnVolver
             // 

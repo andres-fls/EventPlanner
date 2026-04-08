@@ -66,10 +66,20 @@ namespace EventPlanner // Espacio de nombres de la aplicación
         // Botón: Cierra la sesión actual y vuelve a la pantalla de login.
         private void btnSalir_Click(object sender, EventArgs e) // Evento Click salir
         {
-            LoginForm login = new LoginForm(); // Instancia login
-            this.Hide();          // Oculta menú
-            login.ShowDialog();   // Muestra modal
-            this.Close();         // Cierra menú
+            DialogResult resultado = MessageBox.Show(
+                "¿Seguro que deseas cerrar sesión?",
+                "Confirmar salida",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (resultado == DialogResult.Yes)
+            {
+                LoginForm login = new LoginForm(); // Instancia login
+                this.Hide();          // Oculta menú
+                login.ShowDialog();   // Muestra modal
+                this.Close();         // Cierra menú
+            }
         }
 
         // Botón: Abre el formulario de reportes (solo visible para admin/instructor).
@@ -79,6 +89,11 @@ namespace EventPlanner // Espacio de nombres de la aplicación
             this.Hide(); // Oculta menú
             form.ShowDialog(); // Muestra modal
             this.Show(); // Vuelve a mostrar menú
+        }
+
+        private void panelBase_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

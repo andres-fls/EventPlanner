@@ -79,7 +79,15 @@ namespace EventPlanner // Espacio de nombres de la aplicación
 
         private void btnSalir_Click(object sender, EventArgs e) // Evento Click del botón salir
         {
-            Application.Exit(); // Cierra aplicación
+            DialogResult resultado = MessageBox.Show("¿Seguro que quieres salir?","Confirmar salida",
+                MessageBoxButtons.YesNo,MessageBoxIcon.Question
+             );
+
+            if (resultado == DialogResult.Yes)
+            {
+                this.Close(); // Cierra el formulario
+            }
+
         }
 
         private void txtUsuario_TextChanged(object sender, EventArgs e) // Evento TextChanged del textbox usuario

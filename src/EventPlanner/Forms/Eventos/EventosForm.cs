@@ -33,6 +33,8 @@ namespace EventPlanner // Espacio de nombres de la aplicación
         // Oculta botones según el rol y carga la lista de eventos.
         private void EventosForm_Load(object sender, EventArgs e) // Evento Load
         {
+            MessageBox.Show("Rol: [" + rolUsuario + "]");
+
             // Si es aprendiz: no puede crear, editar ni eliminar eventos
             if (rolUsuario == "Aprendiz") // Verifica rol aprendiz
             {
@@ -41,7 +43,7 @@ namespace EventPlanner // Espacio de nombres de la aplicación
                 btnEliminar.Visible = false; // Oculta botón eliminar
             }
             // Si es administrador: no puede inscribirse ni cancelar inscripciones
-            if (rolUsuario == "Admin") // Verifica rol admin
+            if (rolUsuario == "Administrador") // Verifica rol admin
             {
                 btnInscribirse.Visible = false; // Oculta botón inscribirse
                 btnCancelarInscripcion.Visible = false; // Oculta botón cancelar
@@ -53,7 +55,7 @@ namespace EventPlanner // Espacio de nombres de la aplicación
         // Evento vacío (probablemente generado automáticamente por el diseñador)
         private void panelBase_Paint(object sender, PaintEventArgs e) // Evento Paint del panel
         {
-            // Sin implementación específica
+            
         }
 
         // Botón "Crear": abre el formulario de creación de eventos y refresca la lista
@@ -202,7 +204,8 @@ namespace EventPlanner // Espacio de nombres de la aplicación
         }
 
         // Botón "Cancelar Inscripción": permite al aprendiz cancelar su inscripción en el evento seleccionado
-        private void btnCancelarInscripcion_Click(object sender, EventArgs e) // Evento Click de cancelar
+ 
+        private void btnCancelarInscripcion_Click_1(object sender, EventArgs e)
         {
             if (dgvEventos.SelectedRows.Count == 0) // Verifica selección
             {
