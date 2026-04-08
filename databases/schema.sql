@@ -92,6 +92,7 @@ CREATE TABLE Evento(
     idEvento INT IDENTITY(1,1) PRIMARY KEY,
     nombreEvento VARCHAR(50) NOT NULL,
     tipoEvento VARCHAR(30) NOT NULL,
+    categoriaEvento VARCHAR(30) NOT NULL,
     lugarEvento VARCHAR(50) NOT NULL,
     descripcionEvento VARCHAR(MAX),
     
