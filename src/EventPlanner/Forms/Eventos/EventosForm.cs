@@ -130,7 +130,8 @@ namespace EventPlanner
 
                 dgvEventos.Columns["idEvento"].HeaderText = "ID";
                 dgvEventos.Columns["nombreEvento"].HeaderText = "Nombre";
-                dgvEventos.Columns["tipoEvento"].HeaderText = "Tipo";
+                dgvEventos.Columns["categoriaEvento"].HeaderText = "Categoria";
+                dgvEventos.Columns["tipoInscripcion"].HeaderText = "Tipo Inscripción";
                 dgvEventos.Columns["lugarEvento"].HeaderText = "Lugar";
                 dgvEventos.Columns["fechaInicioEvento"].HeaderText = "Fecha";
                 dgvEventos.Columns["cupoMaximo"].HeaderText = "Cupo";
@@ -256,8 +257,6 @@ namespace EventPlanner
         // ==========================
         private void btnVolver_Click(object sender, EventArgs e)
         {
-            MenuForm menu = new MenuForm(rolUsuario);
-            menu.Show();
             this.Close();
         }
     }

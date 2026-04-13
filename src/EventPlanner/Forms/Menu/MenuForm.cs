@@ -26,7 +26,7 @@ namespace EventPlanner
         private void ConfigurarVistaPorRol()
         {
             // 🔥 Usa UN SOLO estándar de rol
-            if (rolUsuario == "Administrador")
+            if (rolUsuario == "Admin")
             {
                 // Admin ve todo
                 btnEventos.Visible = true;
@@ -63,7 +63,7 @@ namespace EventPlanner
         // ==========================
         private void btnUsuarios_Click(object sender, EventArgs e)
         {
-            if (rolUsuario != "Administrador")
+            if (rolUsuario != "Admin")
             {
                 MessageBox.Show("Acceso no autorizado.");
                 return;
@@ -80,7 +80,7 @@ namespace EventPlanner
         // ==========================
         private void btnReportes_Click(object sender, EventArgs e)
         {
-            if (rolUsuario != "Administrador")
+            if (rolUsuario != "Admin")
             {
                 MessageBox.Show("Acceso no autorizado.");
                 return;
@@ -106,10 +106,7 @@ namespace EventPlanner
 
             if (resultado == DialogResult.Yes)
             {
-                Session.IdUsuario = 0;
-                Session.IdAprendiz = 0;
-                Session.Rol = null;
-
+                Session.LimpiarSesion();
                 this.Hide();
 
                 LoginForm login = new LoginForm();

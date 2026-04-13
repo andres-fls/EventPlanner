@@ -25,9 +25,6 @@ namespace EventPlanner.Models
         // Nombre o título del evento (ej: "Hackathon 2025").
         public string nombreEvento { get; set; }
 
-        // Tipo de evento (ej: "Conferencia", "Taller", "Feria", "Hackathon").
-        public string tipoEvento { get; set; }
-
         public string categoriaEvento { get; set; }
 
         // Lugar físico o virtual donde se realiza el evento.

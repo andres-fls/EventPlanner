@@ -83,7 +83,7 @@ namespace EventPlanner
                         break;
 
                     case "Ambos":
-                        CargarEventos(desde, hasta); // simple por ahora
+                        CargarAmbos(desde, hasta); // ← antes llamaba solo CargarEventos
                         break;
                 }
 
@@ -108,13 +108,14 @@ namespace EventPlanner
 
             dgvReporte.Columns["idEvento"].HeaderText = "ID";
             dgvReporte.Columns["nombreEvento"].HeaderText = "Nombre";
-            dgvReporte.Columns["tipoEvento"].HeaderText = "Tipo";
+            dgvReporte.Columns["categoriaEvento"].HeaderText = "Categoria";
+            dgvReporte.Columns["tipoInscripcion"].HeaderText = "Tipo Inscripción";
             dgvReporte.Columns["lugarEvento"].HeaderText = "Lugar";
             dgvReporte.Columns["fechaInicioEvento"].HeaderText = "Fecha";
             dgvReporte.Columns["cupoMaximo"].HeaderText = "Cupo";
             dgvReporte.Columns["activo"].HeaderText = "Activo";
 
-            // ocultar basura
+            // ocultar 
             dgvReporte.Columns["descripcionEvento"].Visible = false;
             dgvReporte.Columns["fechaFinEvento"].Visible = false;
             dgvReporte.Columns["fechaInicioInscripcion"].Visible = false;
@@ -142,6 +143,36 @@ namespace EventPlanner
             dgvReporte.Columns["generoAprendiz"].Visible = false;
             dgvReporte.Columns["codigoFicha"].Visible = false;
             dgvReporte.Columns["idUsuario"].Visible = false;
+        }
+
+        // =====================================================
+        // AMBOS — muestra eventos y aprendices en filas combinadas
+        // =====================================================
+        private void CargarAmbos(DateTime desde, DateTime hasta)
+        {
+            // Usamos InscripcionDetalle que ya tiene JOIN de aprendiz + evento
+            InscripcionService inscripcionService = new InscripcionService();
+            List<InscripcionDetalle> lista = inscripcionService.ObtenerInscripcionesConDetalle();
+
+            // Filtrar por rango: solo inscripciones en eventos dentro del rango
+            List<Evento> eventosRango = eventoService.ObtenerEventosPorFecha(desde, hasta);
+
+            HashSet<int> idsValidos = new HashSet<int>();
+            foreach (var ev in eventosRango)
+                idsValidos.Add(ev.idEvento);
+
+            List<InscripcionDetalle> filtrada = lista.FindAll(i => idsValidos.Contains(i.idEvento));
+
+            dgvReporte.DataSource = filtrada;
+
+            dgvReporte.Columns["idInscripcion"].Visible = false;
+            dgvReporte.Columns["idAprendiz"].Visible = false;
+            dgvReporte.Columns["idEvento"].Visible = false;
+
+            dgvReporte.Columns["nombreAprendiz"].HeaderText = "Aprendiz";
+            dgvReporte.Columns["nombreEvento"].HeaderText = "Evento";
+            dgvReporte.Columns["modalidad"].HeaderText = "Modalidad";
+            dgvReporte.Columns["estadoInscripcion"].HeaderText = "Estado";
         }
 
         // =====================================================
@@ -213,8 +244,6 @@ namespace EventPlanner
         // =====================================================
         private void btnVolver_Click(object sender, EventArgs e)
         {
-            MenuForm menu = new MenuForm(rolUsuario);
-            menu.Show();
             this.Close();
         }
     }

@@ -49,6 +49,9 @@ namespace EventPlanner
                 dtpFechaEve.Value = _eventoEditar.fechaInicioEvento;
                 dtpHoraEve.Value = _eventoEditar.fechaInicioEvento;
 
+                dtpFechaEveFin.Value = _eventoEditar.fechaFinEvento;   
+                dtpHoraEveFin.Value = _eventoEditar.fechaFinEvento;   
+
                 dtpFechaIni.Value = _eventoEditar.fechaInicioInscripcion;
                 dtpHoraIni.Value = _eventoEditar.fechaInicioInscripcion;
 
@@ -97,7 +100,7 @@ namespace EventPlanner
                         dtpFechaEve.Value.Date + dtpHoraEve.Value.TimeOfDay,
 
                     fechaFinEvento =
-                        dtpFechaEve.Value.Date + dtpHoraEve.Value.TimeOfDay,
+                        dtpFechaEveFin.Value.Date + dtpHoraEveFin.Value.TimeOfDay,
 
                     fechaInicioInscripcion =
                         dtpFechaIni.Value.Date + dtpHoraIni.Value.TimeOfDay,

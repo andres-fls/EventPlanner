@@ -37,17 +37,11 @@ namespace EventPlanner.Utils
             return false;
         }
 
-        // ===============================
-        // SOLO LETRAS
-        // ===============================
-        // Valida que el texto del TextBox contenga solo letras (incluyendo acentos y espacios).
-        // Retorna: true si el formato es correcto, false en caso contrario.
         public static bool SoloLetras(TextBox txt, string nombreCampo)
         {
-            string valor = txt.Text.Trim();
+            string valor = txt.Text.Trim(); // ← ahora sí se usa abajo
 
-            // Expresión regular: permite letras mayúsculas/minúsculas, acentos, eñe y espacios
-            if (!Regex.IsMatch(txt.Text, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
+            if (!Regex.IsMatch(valor, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
             {
                 MessageBox.Show($"{nombreCampo} solo debe contener letras.",
                     "Validación",
@@ -61,16 +55,11 @@ namespace EventPlanner.Utils
             return true;
         }
 
-        // ===============================
-        // SOLO NÚMEROS
-        // ===============================
-        // Valida que el texto del TextBox contenga solo dígitos numéricos.
-        // Retorna: true si solo contiene números, false en caso contrario.
         public static bool SoloNumeros(TextBox txt, string nombreCampo)
         {
-            string valor = txt.Text.Trim();
+            string valor = txt.Text.Trim(); // ← ahora sí se usa abajo
 
-            if (!Regex.IsMatch(txt.Text, @"^[0-9]+$"))
+            if (!Regex.IsMatch(valor, @"^[0-9]+$"))
             {
                 MessageBox.Show($"{nombreCampo} solo debe contener números.",
                     "Validación",
@@ -91,9 +80,9 @@ namespace EventPlanner.Utils
         // Retorna: true si la edad es válida, false en caso contrario.
         public static bool EdadValida(TextBox txt)
         {
-            if (!int.TryParse(txt.Text, out int edad) || edad < 10 || edad > 100)
+            if (!int.TryParse(txt.Text, out int edad) || edad < 14|| edad > 100)
             {
-                MessageBox.Show("Ingrese una edad válida (10 - 100).",
+                MessageBox.Show("Ingrese una edad válida (14 - 100).",
                     "Validación",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);

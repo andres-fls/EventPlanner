@@ -116,6 +116,9 @@ namespace EventPlanner.Services
             if (evento.fechaInicioEvento < DateTime.Now)
                 throw new Exception("No se pueden crear eventos en fechas pasadas.");
 
+            if (evento.fechaFinEvento < evento.fechaInicioEvento)
+                throw new Exception("La fecha de fin del evento no puede ser anterior al inicio.");
+
             // --------------------------
             // Horario permitido (7am - 7pm)
             // --------------------------
