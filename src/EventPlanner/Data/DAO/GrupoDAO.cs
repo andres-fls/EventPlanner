@@ -1,13 +1,10 @@
 ﻿// ============================================================
 // Archivo: GrupoDAO.cs
-// Propósito: Maneja las operaciones de acceso a datos para 
-//            la entidad Grupo.
-// Contiene métodos para obtener la lista de grupos disponibles
-//            desde la base de datos.
+// DAO completo y mantenible
 // ============================================================
 
-using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using EventPlanner.Models;
 using EventPlanner.Data;
@@ -17,43 +14,94 @@ namespace EventPlanner.DAO
     public class GrupoDAO
     {
         // ===============================
-        // OBTENER TODOS LOS GRUPOS
+        // OBTENER TODOS
         // ===============================
-        // Retorna una lista con todos los grupos registrados.
-        // Cada grupo contiene idGrupo y nombreGrupo.
         public List<Grupo> ObtenerGrupos()
         {
-            // Lista vacía para almacenar los resultados
             List<Grupo> lista = new List<Grupo>();
 
-            // Establece conexión a la base de datos usando la clase Conexion
             using (SqlConnection conexion = new Conexion().Conectar())
             {
-                conexion.Open(); // Abre la conexión
+                conexion.Open();
 
-                // Consulta SQL: selecciona id y nombre de todos los grupos
-                string query = @"SELECT idGrupo, nombreGrupo
+                string query = @"SELECT idGrupo, nombreGrupo 
                                  FROM Grupo";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
-                using (SqlDataReader reader = cmd.ExecuteReader()) // Ejecuta y obtiene el lector
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    // Recorre cada fila del resultado
                     while (reader.Read())
                     {
-                        // Crea un objeto Grupo y asigna los valores leídos
-                        Grupo grupo = new Grupo()
-                        {
-                            idGrupo = Convert.ToInt32(reader["idGrupo"]),
-                            nombreGrupo = reader["nombreGrupo"].ToString()
-                        };
-
-                        lista.Add(grupo); // Agrega a la lista
+                        lista.Add(MapearGrupo(reader));
                     }
                 }
             }
 
-            return lista; // Retorna la lista completa
+            return lista;
+        }
+
+        // ===============================
+        // OBTENER POR ID
+        // ===============================
+        public Grupo ObtenerPorId(int idGrupo)
+        {
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                conexion.Open();
+
+                string query = @"SELECT idGrupo, nombreGrupo 
+                                 FROM Grupo
+                                 WHERE idGrupo = @id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idGrupo;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return MapearGrupo(reader);
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // ===============================
+        // EXISTE GRUPO
+        // ===============================
+        public bool ExisteGrupo(int idGrupo)
+        {
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                conexion.Open();
+
+                string query = @"SELECT COUNT(*) 
+                                 FROM Grupo
+                                 WHERE idGrupo = @id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idGrupo;
+
+                    return (int)cmd.ExecuteScalar() > 0;
+                }
+            }
+        }
+
+        // ===============================
+        // MAPPER PRIVADO ⭐
+        // ===============================
+        private Grupo MapearGrupo(SqlDataReader reader)
+        {
+            return new Grupo
+            {
+                idGrupo = reader.GetInt32(0),
+                nombreGrupo = reader.GetString(1)
+            };
         }
     }
 }

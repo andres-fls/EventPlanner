@@ -1,68 +1,114 @@
-﻿// ============================================================
-// Archivo: UsuarioService.cs
-// Propósito: Capa de servicio para la lógica de negocio
-//            relacionada con los usuarios.
-// Contiene métodos para iniciar sesión (validando reglas de negocio)
-//            y registrar nuevos usuarios.
-// Actúa como intermediario entre los formularios y el DAO,
-//            aplicando validaciones antes de llamar a la capa de datos.
-// ============================================================
-
-using EventPlanner.DAO;
+﻿using EventPlanner.DAO;
 using EventPlanner.Models;
+using EventPlanner.Utils;
 using System;
 
 namespace EventPlanner.Services
 {
     public class UsuarioService
     {
-        // Instancia del DAO para acceder a los datos de usuario
         private UsuarioDAO usuarioDAO = new UsuarioDAO();
+        private AprendizDAO aprendizDAO = new AprendizDAO();
 
-        // ==========================
-        // LOGIN DEL SISTEMA
-        // ==========================
-        // Valida las credenciales de un usuario y retorna su rol.
-        // Parámetros:
-        //   usuario - Nombre de usuario ingresado
-        //   password - Contraseña ingresada
-        // Retorna: El rol del usuario ("Aprendiz", "Admin", etc.)
-        // Lanza excepción si los campos están vacíos o las credenciales son incorrectas.
+        // =====================================================
+        // INICIAR SESIÓN
+        // =====================================================
         public string IniciarSesion(string usuario, string password)
         {
-            // Validaciones de negocio (NO van en DAO para mantener separación de responsabilidades)
+            // ==========================
+            // VALIDACIONES
+            // ==========================
             if (string.IsNullOrWhiteSpace(usuario))
                 throw new Exception("Debe ingresar el usuario.");
 
             if (string.IsNullOrWhiteSpace(password))
                 throw new Exception("Debe ingresar la contraseña.");
 
-            // Llama al DAO para validar contra la base de datos
-            string rol = usuarioDAO.ValidarLogin(usuario, password);
+            // ==========================
+            // LIMPIAR SESIÓN PREVIA
+            // ==========================
+            Session.IdUsuario = 0;
+            Session.IdAprendiz = 0;
+            Session.Rol = null;
 
-            // Si el DAO retorna null, significa que las credenciales no coinciden
-            if (rol == null)
-                throw new Exception("Credenciales incorrectas.");
+            // ==========================
+            // VALIDAR LOGIN
+            // ==========================
+            Usuario user = usuarioDAO.ObtenerUsuarioLogin(usuario, password);
 
-            return rol;
+            if (user == null)
+                throw new Exception("Usuario o contraseña incorrectos.");
+
+            // ==========================
+            // CONFIGURAR SESIÓN
+            // ==========================
+            Session.IdUsuario = user.idUsuario;
+            Session.Rol = user.rolUsuario;
+
+            // ==========================
+            // SI ES APRENDIZ → CARGAR PERFIL
+            // ==========================
+            if (user.rolUsuario == "Aprendiz")
+            {
+                Aprendiz aprendiz = aprendizDAO.BuscarPorIdUsuario(user.idUsuario);
+
+                if (aprendiz == null)
+                    throw new Exception("El usuario no tiene perfil de aprendiz asociado.");
+
+                Session.IdAprendiz = aprendiz.idAprendiz;
+            }
+            else
+            {
+                // Asegurar consistencia
+                Session.IdAprendiz = 0;
+            }
+
+            return user.rolUsuario;
         }
 
-        // Registra un nuevo usuario en el sistema.
-        // Parámetro: usuario - Objeto Usuario con los datos a registrar
-        // Retorna: El ID autogenerado del nuevo usuario
-        // Lanza excepción si el nombre de usuario o contraseña están vacíos.
+        // =====================================================
+        // REGISTRAR USUARIO
+        // =====================================================
         public int RegistrarUsuario(Usuario usuario)
         {
-            // Validación de negocio: nombre de usuario no vacío
+            // ==========================
+            // VALIDACIONES
+            // ==========================
+            if (usuario == null)
+                throw new Exception("El usuario no puede ser nulo.");
+
             if (string.IsNullOrWhiteSpace(usuario.nombreUsuario))
                 throw new Exception("El nombre de usuario es obligatorio.");
 
-            // Validación de negocio: contraseña no vacía
             if (string.IsNullOrWhiteSpace(usuario.passwordUsuario))
                 throw new Exception("La contraseña es obligatoria.");
 
-            // Llama al DAO para insertar el usuario en la base de datos
+            if (string.IsNullOrWhiteSpace(usuario.rolUsuario))
+                throw new Exception("Debe especificar un rol.");
+
+            // ==========================
+            // VALIDAR EXISTENCIA (CORRECTO)
+            // ==========================
+            Usuario existente = usuarioDAO.ObtenerPorNombre(usuario.nombreUsuario);
+
+            if (existente != null)
+                throw new Exception("El usuario ya existe.");
+
+            // ==========================
+            // CREAR USUARIO
+            // ==========================
             return usuarioDAO.CrearUsuario(usuario);
+        }
+
+        // =====================================================
+        // OBTENER USUARIO POR ID
+        // =====================================================
+        public Usuario ObtenerUsuarioPorId(int idUsuario)
+        {
+            if (idUsuario <= 0)
+                throw new Exception("ID de usuario inválido.");
+
+            return usuarioDAO.ObtenerUsuarioPorId(idUsuario);
         }
     }
 }

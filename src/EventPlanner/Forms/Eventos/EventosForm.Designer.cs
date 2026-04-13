@@ -57,7 +57,6 @@
             this.panelBase.Name = "panelBase";
             this.panelBase.Size = new System.Drawing.Size(784, 411);
             this.panelBase.TabIndex = 0;
-            this.panelBase.Paint += new System.Windows.Forms.PaintEventHandler(this.panelBase_Paint);
             // 
             // btnCancelarInscripcion
             // 
@@ -69,7 +68,7 @@
             this.btnCancelarInscripcion.TabIndex = 13;
             this.btnCancelarInscripcion.Text = "Cancelar inscripcion";
             this.btnCancelarInscripcion.UseVisualStyleBackColor = false;
-            this.btnCancelarInscripcion.Click += new System.EventHandler(this.btnCancelarInscripcion_Click_1);
+            this.btnCancelarInscripcion.Click += new System.EventHandler(this.btnCancelarInscripcion_Click);
             // 
             // btnVolver
             // 
@@ -150,6 +149,7 @@
             this.dgvEventos.Name = "dgvEventos";
             this.dgvEventos.Size = new System.Drawing.Size(696, 281);
             this.dgvEventos.TabIndex = 7;
+            //this.dgvEventos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEventos_CellContentClick);
             // 
             // EventosForm
             // 

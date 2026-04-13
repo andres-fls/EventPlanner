@@ -1,16 +1,6 @@
-﻿// ============================================================
-// Archivo: AprendizService.cs
-// Propósito: Capa de servicio para la lógica de negocio
-//            relacionada con los aprendices.
-// Contiene métodos para crear aprendices, listarlos, buscar por
-//            cédula, buscar por ID de usuario, y obtener aprendices
-//            que se inscribieron en un rango de fechas.
-// Aplica validaciones de reglas de negocio (campos obligatorios,
-//            edad positiva, ficha válida, etc.) antes de llamar al DAO.
-// ============================================================
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using EventPlanner.DAO;
 using EventPlanner.Models;
 
@@ -18,42 +8,37 @@ namespace EventPlanner.Services
 {
     public class AprendizService
     {
-        // Instancia del DAO para acceder a los datos de aprendiz
         private AprendizDAO aprendizDAO = new AprendizDAO();
 
         // ==========================
         // CREAR APRENDIZ
         // ==========================
-        // Valida los datos del aprendiz y lo guarda en la base de datos.
-        // Parámetro: aprendiz - Objeto Aprendiz con los datos a registrar.
-        // Retorna: true si la inserción fue exitosa, false en caso contrario.
         public bool CrearAprendiz(Aprendiz aprendiz)
         {
-            // Aplica reglas de negocio antes de insertar
             ValidarAprendiz(aprendiz);
-            // Llama al DAO para realizar la inserción
+
+            // ❗ Regla de negocio: no permitir duplicados por cédula
+            var existente = aprendizDAO.BuscarPorCedula(aprendiz.cedulaAprendiz);
+            if (existente != null)
+                throw new Exception("Ya existe un aprendiz con esta cédula.");
+
+            // ❗ Regla: un usuario solo puede tener un aprendiz
+            var usuarioAsociado = aprendizDAO.BuscarPorIdUsuario(aprendiz.idUsuario);
+            if (usuarioAsociado != null)
+                throw new Exception("Este usuario ya tiene un aprendiz asociado.");
+
             return aprendizDAO.CrearAprendiz(aprendiz);
         }
 
         // ==========================
-        // LISTAR APRENDICES
-        // ==========================
-        // Retorna una lista con todos los aprendices registrados.
         public List<Aprendiz> ObtenerAprendices()
         {
             return aprendizDAO.ObtenerAprendices();
         }
 
         // ==========================
-        // BUSCAR POR CÉDULA
-        // ==========================
-        // Busca un aprendiz por su número de cédula.
-        // Parámetro: cedula - Número de cédula a buscar.
-        // Retorna: Objeto Aprendiz si se encuentra, o null si no existe.
-        // Lanza excepción si la cédula está vacía.
         public Aprendiz BuscarPorCedula(string cedula)
         {
-            // Validación de negocio: la cédula no puede estar vacía
             if (string.IsNullOrWhiteSpace(cedula))
                 throw new Exception("La cédula no puede estar vacía.");
 
@@ -61,42 +46,8 @@ namespace EventPlanner.Services
         }
 
         // ==========================
-        // VALIDACIONES (REGLAS DE NEGOCIO)
-        // ==========================
-        // Método privado que verifica que el aprendiz cumpla con las reglas del negocio.
-        private void ValidarAprendiz(Aprendiz aprendiz)
-        {
-            // Validación: cédula obligatoria
-            if (string.IsNullOrWhiteSpace(aprendiz.cedulaAprendiz))
-                throw new Exception("La cédula del aprendiz es obligatoria.");
-
-            // Validación: nombre obligatorio
-            if (string.IsNullOrWhiteSpace(aprendiz.nombreAprendiz))
-                throw new Exception("El nombre del aprendiz es obligatorio.");
-
-            // Validación: correo obligatorio
-            if (string.IsNullOrWhiteSpace(aprendiz.correoAprendiz))
-                throw new Exception("El correo del aprendiz es obligatorio.");
-
-            // Validación: edad debe ser mayor que cero
-            if (aprendiz.edadAprendiz <= 0)
-                throw new Exception("La edad debe ser mayor a cero.");
-
-            // Validación: código de ficha válido (positivo)
-            if (aprendiz.codigoFicha <= 0)
-                throw new Exception("Debe especificarse una ficha válida.");
-        }
-
-        // ==========================
-        // BUSCAR POR ID DE USUARIO
-        // ==========================
-        // Busca un aprendiz asociado a un ID de usuario específico.
-        // Parámetro: idUsuario - Identificador del usuario en la tabla Usuario.
-        // Retorna: Objeto Aprendiz si se encuentra, o null si no existe.
-        // Lanza excepción si el ID no es válido.
         public Aprendiz BuscarPorIdUsuario(int idUsuario)
         {
-            // Validación: el ID debe ser positivo
             if (idUsuario <= 0)
                 throw new Exception("ID de usuario inválido.");
 
@@ -104,16 +55,50 @@ namespace EventPlanner.Services
         }
 
         // ==========================
-        // OBTENER APRENDICES POR RANGO DE FECHAS
-        // ==========================
-        // Retorna aprendices que hayan realizado inscripciones dentro del rango de fechas.
-        // Parámetros:
-        //   desde - Fecha inicial del rango
-        //   hasta - Fecha final del rango
-        // Retorna: Lista de aprendices (solo información básica).
         public List<Aprendiz> ObtenerAprendicesPorFecha(DateTime desde, DateTime hasta)
         {
+            if (hasta < desde)
+                throw new Exception("El rango de fechas es inválido.");
+
             return aprendizDAO.ObtenerAprendicesPorFecha(desde, hasta);
+        }
+
+        // =====================================================
+        // VALIDACIONES DE NEGOCIO
+        // =====================================================
+        private void ValidarAprendiz(Aprendiz aprendiz)
+        {
+            if (aprendiz == null)
+                throw new Exception("El aprendiz no puede ser nulo.");
+
+            if (string.IsNullOrWhiteSpace(aprendiz.cedulaAprendiz))
+                throw new Exception("La cédula es obligatoria.");
+
+            if (aprendiz.cedulaAprendiz.Length < 6)
+                throw new Exception("La cédula no es válida.");
+
+            if (string.IsNullOrWhiteSpace(aprendiz.nombreAprendiz))
+                throw new Exception("El nombre es obligatorio.");
+
+            if (aprendiz.edadAprendiz < 14 || aprendiz.edadAprendiz > 100)
+                throw new Exception("Edad fuera de rango válido.");
+
+            if (string.IsNullOrWhiteSpace(aprendiz.correoAprendiz))
+                throw new Exception("El correo es obligatorio.");
+
+            // Validación simple email
+            if (!Regex.IsMatch(aprendiz.correoAprendiz,
+                @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                throw new Exception("Formato de correo inválido.");
+
+            if (string.IsNullOrWhiteSpace(aprendiz.telefonoAprendiz))
+                throw new Exception("El teléfono es obligatorio.");
+
+            if (aprendiz.codigoFicha <= 0)
+                throw new Exception("Debe especificarse una ficha válida.");
+
+            if (aprendiz.idUsuario <= 0)
+                throw new Exception("Usuario inválido.");
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace EventPlanner
+﻿using System;
+
+namespace EventPlanner
 {
     partial class UsuariosForm
     {
@@ -201,6 +203,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvInscripciones)).EndInit();
             this.ResumeLayout(false);
 
+        }
+
+        private void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

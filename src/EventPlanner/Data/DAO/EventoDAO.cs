@@ -1,15 +1,12 @@
 ﻿// ============================================================
 // Archivo: EventoDAO.cs
-// Propósito: Maneja todas las operaciones de acceso a datos 
-//            relacionadas con los eventos.
-// Contiene métodos para crear, listar, actualizar, desactivar 
-//            (soft delete) y filtrar eventos por rango de fechas.
-// También se encarga de cancelar inscripciones asociadas al 
-//            desactivar un evento.
+// Propósito: Acceso a datos para eventos.
+// Contiene operaciones CRUD + soft delete con integridad.
 // ============================================================
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using EventPlanner.Models;
 using EventPlanner.Data;
@@ -18,33 +15,29 @@ namespace EventPlanner.DAO
 {
     public class EventoDAO
     {
-        // ======================================
+        // =====================================================
         // CREAR EVENTO
-        // ======================================
-        // Inserta un nuevo evento en la base de datos.
-        // Parámetro: evento - Objeto Evento con los datos a registrar.
-        // Retorna: true si la inserción fue exitosa, false en caso contrario.
+        // =====================================================
         public bool CrearEvento(Evento evento)
         {
             using (SqlConnection conexion = new Conexion().Conectar())
             {
                 conexion.Open();
 
-                // Consulta de inserción con todos los campos de la tabla Evento
-                string query = @"INSERT INTO Evento
+                string query = @"
+                INSERT INTO Evento
                 (nombreEvento, tipoEvento, categoriaEvento, lugarEvento, descripcionEvento,
                  fechaInicioEvento, fechaFinEvento,
                  fechaInicioInscripcion, fechaFinInscripcion,
                  cupoMaximo, activo, idUsuarioCreador)
                 VALUES
-                (@nombre, @tipo,@categoria, @lugar, @descripcion,
-                 @fechaInicio, @fechaFin,
-                 @inicioInscripcion, @finInscripcion,
-                 @cupo, @activo, @usuario)";
+                (@nombre,@tipo,@categoria,@lugar,@descripcion,
+                 @fechaInicio,@fechaFin,
+                 @inicioInscripcion,@finInscripcion,
+                 @cupo,@activo,@usuario)";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 {
-                    // Asignación de parámetros con los valores del objeto evento
                     cmd.Parameters.AddWithValue("@nombre", evento.nombreEvento);
                     cmd.Parameters.AddWithValue("@tipo", evento.tipoEvento);
                     cmd.Parameters.AddWithValue("@categoria", evento.categoriaEvento);
@@ -61,17 +54,14 @@ namespace EventPlanner.DAO
                     cmd.Parameters.AddWithValue("@activo", evento.activo);
                     cmd.Parameters.AddWithValue("@usuario", evento.idUsuarioCreador);
 
-                    // ExecuteNonQuery retorna el número de filas afectadas.
-                    // Si es mayor a 0, la inserción fue exitosa.
                     return cmd.ExecuteNonQuery() > 0;
                 }
             }
         }
 
-        // ======================================
-        // LISTAR EVENTOS
-        // ======================================
-        // Retorna una lista con todos los eventos almacenados.
+        // =====================================================
+        // OBTENER TODOS LOS EVENTOS
+        // =====================================================
         public List<Evento> ObtenerEventos()
         {
             List<Evento> lista = new List<Evento>();
@@ -80,69 +70,84 @@ namespace EventPlanner.DAO
             {
                 conexion.Open();
 
-                string query = "SELECT * FROM Evento"; // Obtiene todas las columnas
+                string query = @"
+                SELECT
+                    idEvento,
+                    nombreEvento,
+                    tipoEvento,
+                    categoriaEvento,
+                    lugarEvento,
+                    descripcionEvento,
+                    fechaInicioEvento,
+                    fechaFinEvento,
+                    fechaInicioInscripcion,
+                    fechaFinInscripcion,
+                    cupoMaximo,
+                    activo,
+                    idUsuarioCreador
+                FROM Evento";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    // Recorre cada fila y construye un objeto Evento
                     while (reader.Read())
-                    {
-                        Evento e = new Evento()
-                        {
-                            idEvento = Convert.ToInt32(reader["idEvento"]),
-                            nombreEvento = reader["nombreEvento"].ToString(),
-                            tipoEvento = reader["tipoEvento"].ToString(),
-                            categoriaEvento = reader["categoriaEvento"].ToString(),
-                            lugarEvento = reader["lugarEvento"].ToString(),
-                            descripcionEvento = reader["descripcionEvento"].ToString(),
-
-                            fechaInicioEvento = Convert.ToDateTime(reader["fechaInicioEvento"]),
-                            fechaFinEvento = Convert.ToDateTime(reader["fechaFinEvento"]),
-
-                            fechaInicioInscripcion = Convert.ToDateTime(reader["fechaInicioInscripcion"]),
-                            fechaFinInscripcion = Convert.ToDateTime(reader["fechaFinInscripcion"]),
-
-                            cupoMaximo = Convert.ToInt32(reader["cupoMaximo"]),
-                            activo = Convert.ToBoolean(reader["activo"]),
-
-                            idUsuarioCreador = Convert.ToInt32(reader["idUsuarioCreador"])
-                        };
-
-                        lista.Add(e);
-                    }
+                        lista.Add(MapearEvento(reader));
                 }
             }
 
             return lista;
         }
 
+        // =====================================================
+        // OBTENER EVENTO POR ID ⭐
+        // =====================================================
+        public Evento ObtenerEventoPorId(int idEvento)
+        {
+            Evento evento = null;
 
-        // ======================================
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                conexion.Open();
+
+                string query = "SELECT * FROM Evento WHERE idEvento=@id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@id", idEvento);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            evento = MapearEvento(reader);
+                    }
+                }
+            }
+
+            return evento;
+        }
+
+        // =====================================================
         // ACTUALIZAR EVENTO
-        // ======================================
-        // Modifica los datos de un evento existente.
-        // Parámetro: evento - Objeto Evento con los nuevos valores (debe tener idEvento válido).
-        // Retorna: true si la actualización afectó al menos una fila, false si no se encontró el evento.
+        // =====================================================
         public bool ActualizarEvento(Evento evento)
         {
             using (SqlConnection conexion = new Conexion().Conectar())
             {
                 conexion.Open();
 
-                // Actualiza todos los campos excepto idEvento, fechaFinEvento e idUsuarioCreador (no se incluye fechaFinEvento en la actualización por diseño original)
-                string query = @"UPDATE Evento SET
-                        nombreEvento = @nombre,
-                        tipoEvento = @tipo,
-                        categoriaEvento = @categoria,
-                        lugarEvento = @lugar,
-                        descripcionEvento = @descripcion,
-                        fechaInicioEvento = @fechaInicio,
-                        fechaInicioInscripcion = @inicioInscripcion,
-                        fechaFinInscripcion = @finInscripcion,
-                        cupoMaximo = @cupo,
-                        activo = @activo
-                        WHERE idEvento = @id";
+                string query = @"
+                UPDATE Evento SET
+                    nombreEvento=@nombre,
+                    tipoEvento=@tipo,
+                    categoriaEvento=@categoria,
+                    lugarEvento=@lugar,
+                    descripcionEvento=@descripcion,
+                    fechaInicioEvento=@fechaInicio,
+                    fechaInicioInscripcion=@inicioInscripcion,
+                    fechaFinInscripcion=@finInscripcion,
+                    cupoMaximo=@cupo,
+                    activo=@activo
+                WHERE idEvento=@id";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 {
@@ -163,51 +168,57 @@ namespace EventPlanner.DAO
             }
         }
 
-        // ======================================
-        // DESACTIVAR EVENTO (SOFT DELETE)
-        // ======================================
-        // No elimina el evento físicamente, solo lo marca como inactivo (activo = 0).
-        // Además, cancela todas las inscripciones asociadas a ese evento.
-        // Parámetro: idEvento - Identificador del evento a desactivar.
-        // Retorna: true si se desactivó correctamente, false si no se encontró el evento.
+        // =====================================================
+        // DESACTIVAR EVENTO (SOFT DELETE CON TRANSACTION) ⭐
+        // =====================================================
         public bool DesactivarEvento(int idEvento)
         {
             using (SqlConnection conexion = new Conexion().Conectar())
             {
                 conexion.Open();
 
-                // Paso 1: Cancelar todas las inscripciones cuyo idEvento coincida
-                string queryCancelar = @"UPDATE Inscripcion
-                                 SET estadoInscripcion = 'Cancelado'
-                                 WHERE idEvento = @id";
-
-                using (SqlCommand cmdCancelar = new SqlCommand(queryCancelar, conexion))
+                using (SqlTransaction tx = conexion.BeginTransaction())
                 {
-                    cmdCancelar.Parameters.AddWithValue("@id", idEvento);
-                    cmdCancelar.ExecuteNonQuery(); // No importa si afecta 0 filas
-                }
+                    try
+                    {
+                        string cancelar = @"
+                        UPDATE Inscripcion
+                        SET estadoInscripcion='Cancelado'
+                        WHERE idEvento=@id";
 
-                // Paso 2: Desactivar el evento (activo = 0)
-                string queryDesactivar = @"UPDATE Evento
-                                   SET activo = 0
-                                   WHERE idEvento = @id";
+                        using (SqlCommand cmd = new SqlCommand(cancelar, conexion, tx))
+                        {
+                            cmd.Parameters.AddWithValue("@id", idEvento);
+                            cmd.ExecuteNonQuery();
+                        }
 
-                using (SqlCommand cmdDesactivar = new SqlCommand(queryDesactivar, conexion))
-                {
-                    cmdDesactivar.Parameters.AddWithValue("@id", idEvento);
-                    return cmdDesactivar.ExecuteNonQuery() > 0;
+                        string desactivar = @"
+                        UPDATE Evento
+                        SET activo=0
+                        WHERE idEvento=@id";
+
+                        using (SqlCommand cmd = new SqlCommand(desactivar, conexion, tx))
+                        {
+                            cmd.Parameters.AddWithValue("@id", idEvento);
+
+                            bool ok = cmd.ExecuteNonQuery() > 0;
+
+                            tx.Commit();
+                            return ok;
+                        }
+                    }
+                    catch
+                    {
+                        tx.Rollback();
+                        throw;
+                    }
                 }
             }
         }
 
-        // ======================================
-        // OBTENER EVENTOS POR RANGO DE FECHAS
-        // ======================================
-        // Filtra eventos cuya fecha de inicio esté dentro del rango [desde, hasta].
-        // Parámetros:
-        //   desde - Fecha límite inferior (incluida)
-        //   hasta - Fecha límite superior (incluida)
-        // Retorna: Lista de eventos que cumplen la condición (solo algunos campos básicos).
+        // =====================================================
+        // EVENTOS POR RANGO DE FECHA
+        // =====================================================
         public List<Evento> ObtenerEventosPorFecha(DateTime desde, DateTime hasta)
         {
             List<Evento> lista = new List<Evento>();
@@ -216,9 +227,10 @@ namespace EventPlanner.DAO
             {
                 conexion.Open();
 
-                string query = @"SELECT * FROM Evento
-                         WHERE fechaInicioEvento >= @desde
-                         AND fechaInicioEvento <= @hasta";
+                string query = @"
+                SELECT *
+                FROM Evento
+                WHERE fechaInicioEvento BETWEEN @desde AND @hasta";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 {
@@ -228,25 +240,38 @@ namespace EventPlanner.DAO
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
-                        {
-                            // Solo se asignan algunos campos relevantes para el listado rápido
-                            lista.Add(new Evento()
-                            {
-                                idEvento = Convert.ToInt32(reader["idEvento"]),
-                                nombreEvento = reader["nombreEvento"].ToString(),
-                                tipoEvento = reader["tipoEvento"].ToString(),
-                                categoriaEvento = reader["categoriaEvento"].ToString(),
-                                lugarEvento = reader["lugarEvento"].ToString(),
-                                fechaInicioEvento = Convert.ToDateTime(reader["fechaInicioEvento"]),
-                                cupoMaximo = Convert.ToInt32(reader["cupoMaximo"]),
-                                activo = Convert.ToBoolean(reader["activo"])
-                            });
-                        }
+                            lista.Add(MapearEvento(reader));
                     }
                 }
             }
 
             return lista;
+        }
+
+        // =====================================================
+        // MAPPER PRIVADO ⭐ (EVITA DUPLICACIÓN)
+        // =====================================================
+        private Evento MapearEvento(SqlDataReader reader)
+        {
+            return new Evento()
+            {
+                idEvento = Convert.ToInt32(reader["idEvento"]),
+                nombreEvento = reader["nombreEvento"].ToString(),
+                tipoEvento = reader["tipoEvento"].ToString(),
+                categoriaEvento = reader["categoriaEvento"].ToString(),
+                lugarEvento = reader["lugarEvento"].ToString(),
+                descripcionEvento = reader["descripcionEvento"].ToString(),
+
+                fechaInicioEvento = Convert.ToDateTime(reader["fechaInicioEvento"]),
+                fechaFinEvento = Convert.ToDateTime(reader["fechaFinEvento"]),
+
+                fechaInicioInscripcion = Convert.ToDateTime(reader["fechaInicioInscripcion"]),
+                fechaFinInscripcion = Convert.ToDateTime(reader["fechaFinInscripcion"]),
+
+                cupoMaximo = Convert.ToInt32(reader["cupoMaximo"]),
+                activo = Convert.ToBoolean(reader["activo"]),
+                idUsuarioCreador = Convert.ToInt32(reader["idUsuarioCreador"])
+            };
         }
     }
 }

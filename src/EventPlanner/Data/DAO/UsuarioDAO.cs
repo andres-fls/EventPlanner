@@ -1,93 +1,143 @@
-﻿// ============================================================
-// Archivo: UsuarioDAO.cs
-// Propósito: Maneja las operaciones de acceso a datos relacionadas 
-//            con los usuarios de la aplicación.
-// Contiene métodos para validar credenciales de inicio de sesión 
-//            y para crear nuevos usuarios en la base de datos.
-// ============================================================
-
-using EventPlanner.Data; // Importa capa de acceso a datos
-using EventPlanner.Models; // Importa modelos de datos
-using EventPlanner.Utils; // Importa utilidades
-using System; // Importa base de .NET
-using System.Data.SqlClient; // Importa SQL Server
+﻿using EventPlanner.Data;
+using EventPlanner.Models;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace EventPlanner.DAO
 {
     public class UsuarioDAO
     {
-        /// <summary>
-        /// Valida las credenciales de un usuario contra la base de datos.
-        /// Si son correctas, almacena el Id del usuario en la sesión activa.
-        /// </summary>
-        /// <param name="usuario">Nombre de usuario ingresado</param>
-        /// <param name="password">Contraseña ingresada (sin encriptar aún)</param>
-        /// <returns>El rol del usuario si es exitoso, null si falla la autenticación</returns>
-        public string ValidarLogin(string usuario, string password)
+        // ==========================
+        // LOGIN
+        // ==========================
+        public Usuario ObtenerUsuarioLogin(string usuario, string password)
         {
-            // Usa 'using' para asegurar que la conexión se cierre automáticamente al salir del bloque
             using (SqlConnection conexion = new Conexion().Conectar())
             {
-                conexion.Open();  // Abre la conexión a la base de datos
-
-                // Consulta SQL: obtiene el ID y el rol del usuario que coincida con usuario y contraseña
-                string query = @"SELECT idUsuario, rolusuario 
-                         FROM usuario
-                         WHERE nombreusuario = @usuario
-                         AND passwordusuario = @password";
+                string query = @"SELECT idUsuario, nombreusuario, rolusuario
+                                 FROM Usuario
+                                 WHERE nombreusuario = @usuario
+                                 AND passwordusuario = @password";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 {
-                    // Parámetros para evitar inyección SQL
-                    cmd.Parameters.AddWithValue("@usuario", usuario);
-                    cmd.Parameters.AddWithValue("@password", password);
+                    cmd.Parameters.Add("@usuario", SqlDbType.VarChar).Value = usuario;
+                    cmd.Parameters.Add("@password", SqlDbType.VarChar).Value = password;
 
-                    // Ejecuta la consulta y obtiene el resultado
+                    conexion.Open();
+
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        // Si se encontró al menos un registro
                         if (reader.Read())
                         {
-                            // Guarda el Id del usuario en la sesión global (para usarlo en toda la app)
-                            Session.IdUsuario = Convert.ToInt32(reader["idUsuario"]);
-                            // Retorna el rol del usuario (ej: "admin", "instructor", "aprendiz")
-                            return reader["rolusuario"].ToString();
+                            return new Usuario
+                            {
+                                idUsuario = (int)reader["idUsuario"],
+                                nombreUsuario = reader["nombreusuario"].ToString(),
+                                rolUsuario = reader["rolusuario"].ToString()
+                            };
                         }
                     }
                 }
             }
 
-            // Si no se encontró ningún usuario con esas credenciales, retorna null
             return null;
         }
 
-        /// <summary>
-        /// Inserta un nuevo usuario en la base de datos.
-        /// </summary>
-        /// <param name="usuario">Objeto Usuario con los datos a registrar</param>
-        /// <returns>El Id autogenerado del nuevo usuario</returns>
+        // ==========================
+        // CREAR USUARIO
+        // ==========================
         public int CrearUsuario(Usuario usuario)
         {
             using (SqlConnection conexion = new Conexion().Conectar())
             {
-                conexion.Open();
-
-                // Consulta de inserción con OUTPUT INSERTED.idUsuario para obtener el ID generado
-                string query = @"INSERT INTO Usuario (nombreusuario, passwordusuario, rolusuario)
-                         OUTPUT INSERTED.idUsuario
-                         VALUES (@usuario, @password, @rol)";
+                string query = @"INSERT INTO Usuario
+                                (nombreusuario, passwordusuario, rolusuario)
+                                OUTPUT INSERTED.idUsuario
+                                VALUES (@usuario, @password, @rol)";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 {
-                    // Asigna los valores del objeto Usuario a los parámetros
-                    cmd.Parameters.AddWithValue("@usuario", usuario.nombreUsuario);
-                    cmd.Parameters.AddWithValue("@password", usuario.passwordUsuario);
-                    cmd.Parameters.AddWithValue("@rol", usuario.rolUsuario);
+                    cmd.Parameters.Add("@usuario", SqlDbType.VarChar).Value = usuario.nombreUsuario;
+                    cmd.Parameters.Add("@password", SqlDbType.VarChar).Value = usuario.passwordUsuario;
+                    cmd.Parameters.Add("@rol", SqlDbType.VarChar).Value = usuario.rolUsuario;
 
-                    // ExecuteScalar retorna el valor de la primera columna de la primera fila (el id insertado)
+                    conexion.Open();
                     return (int)cmd.ExecuteScalar();
                 }
             }
+        }
+
+        // ==========================
+        // OBTENER POR ID
+        // ==========================
+        public Usuario ObtenerUsuarioPorId(int idUsuario)
+        {
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                string query = @"SELECT idUsuario, nombreusuario, passwordusuario, rolusuario
+                                 FROM Usuario
+                                 WHERE idUsuario = @id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idUsuario;
+
+                    conexion.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Usuario
+                            {
+                                idUsuario = (int)reader["idUsuario"],
+                                nombreUsuario = reader["nombreusuario"].ToString(),
+                                passwordUsuario = reader["passwordusuario"].ToString(),
+                                rolUsuario = reader["rolusuario"].ToString()
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // ==========================
+        // OBTENER POR NOMBRE (CORREGIDO)
+        // ==========================
+        public Usuario ObtenerPorNombre(string nombreUsuario)
+        {
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                string query = @"SELECT idUsuario, nombreusuario, passwordusuario, rolusuario
+                                 FROM Usuario
+                                 WHERE nombreusuario = @usuario";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.Add("@usuario", SqlDbType.VarChar).Value = nombreUsuario;
+
+                    conexion.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Usuario
+                            {
+                                idUsuario = (int)reader["idUsuario"],
+                                nombreUsuario = reader["nombreusuario"].ToString(),
+                                passwordUsuario = reader["passwordusuario"].ToString(),
+                                rolUsuario = reader["rolusuario"].ToString()
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

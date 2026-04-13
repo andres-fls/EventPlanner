@@ -1,11 +1,8 @@
 ﻿// ============================================================
 // Archivo: EventoService.cs
-// Propósito: Capa de servicio para la lógica de negocio
-//            relacionada con los eventos.
-// Contiene métodos para crear, listar, actualizar, desactivar
-//            y filtrar eventos por fechas.
-// Aplica validaciones de reglas de negocio (rango de inscripción,
-//            cupo no negativo, etc.) antes de llamar al DAO.
+// Propósito: Lógica de negocio relacionada con los eventos.
+// Aquí viven TODAS las reglas del sistema sobre eventos.
+// El Form solo envía datos.
 // ============================================================
 
 using System;
@@ -15,152 +12,141 @@ using EventPlanner.Models;
 
 namespace EventPlanner.Services
 {
-    public static class tipoEvento
-    {
-        public const string GRUPAL = "Grupal";
-        public const string INDIVIDUAL = "Individual";
-
-    }
     public class EventoService
     {
-        // Instancia del DAO para acceder a los datos de evento
         private EventoDAO eventoDAO = new EventoDAO();
 
         // ==========================
         // CREAR EVENTO
         // ==========================
-        // Valida los datos del evento y lo guarda en la base de datos.
-        // Parámetro: evento - Objeto Evento con los datos a registrar.
-        // Retorna: true si la inserción fue exitosa, false en caso contrario.
         public bool CrearEvento(Evento evento)
         {
-            // Aplica reglas de negocio antes de insertar
             ValidarEvento(evento);
-            // Llama al DAO para realizar la inserción
             return eventoDAO.CrearEvento(evento);
         }
 
         // ==========================
-        // LISTAR EVENTOS
+        // ACTUALIZAR EVENTO
         // ==========================
-        // Retorna una lista con todos los eventos registrados.
+        public bool ActualizarEvento(Evento evento)
+        {
+            ValidarEvento(evento);
+            return eventoDAO.ActualizarEvento(evento);
+        }
+
+        // ==========================
+        // LISTAR TODOS LOS EVENTOS
+        // ==========================
         public List<Evento> ObtenerEventos()
         {
             return eventoDAO.ObtenerEventos();
         }
 
-
+        // ==========================
+        // EVENTOS DISPONIBLES
+        // (Solo eventos actuales o futuros)
+        // ==========================
         public List<Evento> ObtenerEventosDisponibles()
         {
             List<Evento> eventos = eventoDAO.ObtenerEventos();
             List<Evento> eventosValidos = new List<Evento>();
-            foreach (var evento in eventos)
 
+            foreach (var evento in eventos)
             {
-                if (evento.fechaInicioEvento >= DateTime.Now.Date)
+                if (evento.activo &&
+                    evento.fechaInicioEvento.Date >= DateTime.Now.Date)
                 {
                     eventosValidos.Add(evento);
                 }
             }
-            return eventosValidos;
 
+            return eventosValidos;
         }
+
         // ==========================
-        // DESACTIVAR EVENTO (SOFT DELETE)
+        // DESACTIVAR EVENTO
         // ==========================
-        // Marca un evento como inactivo (activo = false) y cancela sus inscripciones asociadas.
-        // Parámetro: idEvento - Identificador del evento a desactivar.
-        // Retorna: true si la desactivación fue exitosa.
         public bool DesactivarEvento(int idEvento)
         {
             return eventoDAO.DesactivarEvento(idEvento);
         }
 
         // ==========================
-        // VALIDACIONES (REGLAS DE NEGOCIO)
+        // OBTENER EVENTO POR ID
         // ==========================
-        // Método privado que verifica que el evento cumpla con las reglas del negocio.
+        public Evento ObtenerEventoPorId(int idEvento)
+        {
+            if (idEvento <= 0)
+                throw new Exception("ID de evento inválido.");
+
+            return eventoDAO.ObtenerEventoPorId(idEvento);
+        }
+
+        // ==========================
+        // FILTRAR POR FECHA
+        // ==========================
+        public List<Evento> ObtenerEventosPorFecha(DateTime desde, DateTime hasta)
+        {
+            return eventoDAO.ObtenerEventosPorFecha(desde, hasta);
+        }
+
+        // =====================================================
+        // VALIDACIONES DE NEGOCIO (EL CORAZÓN DEL SERVICE)
+        // =====================================================
         private void ValidarEvento(Evento evento)
         {
             if (evento == null)
                 throw new Exception("El evento no puede ser nulo.");
 
             // --------------------------
-            // Validar nombre
+            // Nombre obligatorio
             // --------------------------
             if (string.IsNullOrWhiteSpace(evento.nombreEvento))
                 throw new Exception("El nombre del evento es obligatorio.");
 
             // --------------------------
-            // Validar fecha del evento
-            // (No permitir fechas pasadas)
+            // Lugar obligatorio
             // --------------------------
-            if (evento.fechaInicioEvento.Date < DateTime.Now.Date)
-                throw new Exception("No se puede crear un evento en fechas anteriores.");
+            if (string.IsNullOrWhiteSpace(evento.lugarEvento))
+                throw new Exception("El lugar del evento es obligatorio.");
 
             // --------------------------
-            // Validar horario permitido
-            // (7 AM - 7 PM)
+            // No permitir eventos pasados
             // --------------------------
-            TimeSpan hora = evento.fechaInicioEvento.TimeOfDay;
+            if (evento.fechaInicioEvento < DateTime.Now)
+                throw new Exception("No se pueden crear eventos en fechas pasadas.");
 
-            if (hora < new TimeSpan(7, 0, 0) ||
-                hora > new TimeSpan(19, 0, 0))
+            // --------------------------
+            // Horario permitido (7am - 7pm)
+            // --------------------------
+            TimeSpan horaEvento = evento.fechaInicioEvento.TimeOfDay;
+
+            if (horaEvento < new TimeSpan(7, 0, 0) ||
+                horaEvento >= new TimeSpan(19, 0, 0))
             {
-                throw new Exception("Los eventos solo pueden realizarse entre 7am y 7pm.");
+                throw new Exception(
+                    "Los eventos solo pueden realizarse entre 7:00 AM y 7:00 PM.");
             }
 
             // --------------------------
             // Validar rango inscripción
             // --------------------------
-            if (evento.fechaFinInscripcion < evento.fechaInicioInscripcion)
-                throw new Exception("Rango de inscripción inválido.");
+            if (evento.fechaFinInscripcion <= evento.fechaInicioInscripcion)
+                throw new Exception(
+                    "La fecha de cierre debe ser posterior al inicio de inscripción.");
 
             // --------------------------
-            // Validar cupo
+            // Inscripciones deben cerrar antes del evento
             // --------------------------
-            if (evento.cupoMaximo < 0)
-                throw new Exception("El cupo no puede ser negativo.");
+            if (evento.fechaFinInscripcion >= evento.fechaInicioEvento)
+                throw new Exception(
+                    "Las inscripciones deben cerrarse antes del evento.");
 
             // --------------------------
-            // ✅ VALIDAR TIPO EVENTO (NUEVO)
+            // Cupo válido
             // --------------------------
-            if (string.IsNullOrWhiteSpace(evento.tipoEvento))
-                throw new Exception("Debe seleccionar el tipo de evento.");
-
-            if (evento.tipoEvento != tipoEvento.GRUPAL &&
-                evento.tipoEvento != tipoEvento.INDIVIDUAL)
-            {
-                throw new Exception("Tipo de evento inválido.");
-            }
-        }
-
-        
-
-        // ==========================
-        // ACTUALIZAR EVENTO
-        // ==========================
-        // Modifica los datos de un evento existente.
-        // Parámetro: evento - Objeto Evento con los nuevos valores (debe tener idEvento válido).
-        // Retorna: true si la actualización afectó al menos una fila.
-        public bool ActualizarEvento(Evento evento)
-        {
-            // Aplica las mismas validaciones que en la creación
-            ValidarEvento(evento);
-            return eventoDAO.ActualizarEvento(evento);
-        }
-
-        // ==========================
-        // OBTENER EVENTOS POR RANGO DE FECHAS
-        // ==========================
-        // Filtra eventos cuya fecha de inicio esté dentro del rango [desde, hasta].
-        // Parámetros:
-        //   desde - Fecha límite inferior (incluida)
-        //   hasta - Fecha límite superior (incluida)
-        // Retorna: Lista de eventos que cumplen la condición.
-        public List<Evento> ObtenerEventosPorFecha(DateTime desde, DateTime hasta)
-        {
-            return eventoDAO.ObtenerEventosPorFecha(desde, hasta);
+            if (evento.cupoMaximo <= 0)
+                throw new Exception("El cupo debe ser mayor a cero.");
         }
     }
 }

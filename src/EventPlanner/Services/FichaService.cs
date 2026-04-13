@@ -1,13 +1,10 @@
 ﻿// ============================================================
 // Archivo: FichaService.cs
-// Propósito: Capa de servicio para la lógica de negocio
-//            relacionada con las fichas de formación.
-// Contiene un método para obtener la lista de todas las fichas
-//            disponibles en el sistema.
-// Actúa como intermediario entre los formularios y el DAO,
-//            sin validaciones adicionales en este caso (solo delegación).
+// RESPONSABILIDAD:
+// Lógica de negocio para Fichas
 // ============================================================
 
+using System;
 using System.Collections.Generic;
 using EventPlanner.DAO;
 using EventPlanner.Models;
@@ -16,17 +13,46 @@ namespace EventPlanner.Services
 {
     public class FichaService
     {
-        // Instancia del DAO para acceder a los datos de ficha
         private FichaDAO fichaDAO = new FichaDAO();
 
         // ==========================
         // LISTAR FICHAS
         // ==========================
-        // Retorna una lista con todas las fichas registradas.
-        // No aplica validaciones de negocio adicionales; simplemente delega en el DAO.
         public List<Ficha> ObtenerFichas()
         {
-            return fichaDAO.ObtenerFichas();
+            List<Ficha> lista = fichaDAO.ObtenerFichas();
+
+            if (lista == null)
+                throw new Exception("Error al obtener las fichas.");
+
+            return lista;
+        }
+
+        // ==========================
+        // OBTENER POR CÓDIGO
+        // ==========================
+        public Ficha ObtenerPorCodigo(int codigoFicha)
+        {
+            if (codigoFicha <= 0)
+                throw new Exception("Código de ficha inválido.");
+
+            Ficha ficha = fichaDAO.ObtenerPorCodigo(codigoFicha);
+
+            if (ficha == null)
+                throw new Exception("La ficha no existe.");
+
+            return ficha;
+        }
+
+        // ==========================
+        // VALIDAR EXISTENCIA
+        // ==========================
+        public bool ExisteFicha(int codigoFicha)
+        {
+            if (codigoFicha <= 0)
+                return false;
+
+            return fichaDAO.ExisteFicha(codigoFicha);
         }
     }
 }

@@ -1,11 +1,7 @@
 ﻿// ============================================================
 // Archivo: ProgramaService.cs
-// Propósito: Capa de servicio para la lógica de negocio
-//            relacionada con los programas de formación.
-// Contiene métodos para obtener la lista de todos los programas
-//            y para buscar un programa por su ID.
-// Actúa como intermediario entre los formularios y el DAO,
-//            aplicando validaciones básicas antes de llamar a la capa de datos.
+// RESPONSABILIDAD:
+// Lógica de negocio para Programas
 // ============================================================
 
 using EventPlanner.DAO;
@@ -17,34 +13,49 @@ namespace EventPlanner.Services
 {
     public class ProgramaService
     {
-        // Instancia del DAO para acceder a los datos de programa
         private ProgramaDAO programaDAO = new ProgramaDAO();
 
         // ==========================
-        // LISTAR PROGRAMAS
+        // OBTENER TODOS LOS PROGRAMAS
         // ==========================
-        // Retorna una lista con todos los programas registrados.
-        // No aplica validaciones adicionales, solo delega en el DAO.
         public List<Programa> ObtenerProgramas()
         {
-            return programaDAO.ObtenerProgramas();
+            List<Programa> lista = programaDAO.ObtenerProgramas();
+
+            // Validación mínima (opcional pero profesional)
+            if (lista == null)
+                throw new Exception("Error al obtener los programas.");
+
+            return lista;
         }
 
         // ==========================
-        // OBTENER PROGRAMA POR ID
+        // OBTENER POR ID
         // ==========================
-        // Busca y retorna un programa específico según su identificador.
-        // Parámetro: idPrograma - ID del programa a buscar (debe ser mayor a 0)
-        // Retorna: Objeto Programa si se encuentra, o null si no existe.
-        // Lanza excepción si el ID no es válido (menor o igual a 0).
         public Programa ObtenerPorId(int idPrograma)
         {
-            // Validación de negocio: el ID debe ser positivo
             if (idPrograma <= 0)
-                throw new Exception("El ID del programa no es válido.");
+                throw new Exception("ID de programa inválido.");
 
-            // Delega la búsqueda en el DAO
-            return programaDAO.ObtenerPorId(idPrograma);
+            Programa programa = programaDAO.ObtenerPorId(idPrograma);
+
+            if (programa == null)
+                throw new Exception("El programa no existe.");
+
+            return programa;
+        }
+
+        // ==========================
+        // VALIDAR EXISTENCIA (ÚTIL PARA OTROS SERVICES)
+        // ==========================
+        public bool ExistePrograma(int idPrograma)
+        {
+            if (idPrograma <= 0)
+                return false;
+
+            Programa programa = programaDAO.ObtenerPorId(idPrograma);
+
+            return programa != null;
         }
     }
 }

@@ -1,70 +1,101 @@
-﻿// ============================================================
-// Archivo: MenuForm.cs
-// Propósito: Ventana principal del menú de la aplicación.
-// Muestra diferentes opciones según el rol del usuario 
-// (Aprendiz o Administrador/Instructor). Permite navegar 
-// hacia las secciones de Eventos, Usuarios, Reportes y Salir.
-// ============================================================
+﻿using System;
+using System.Windows.Forms;
+using EventPlanner.Utils;
 
-using System; // Importa base de .NET
-using System.Windows.Forms; // Importa Windows Forms
-using EventPlanner.Utils; // Importa utilidades
-
-namespace EventPlanner // Espacio de nombres de la aplicación
+namespace EventPlanner
 {
-    public partial class MenuForm : Form // Clase del formulario de menú
+    public partial class MenuForm : Form
     {
-        // Almacena el rol del usuario logueado ("Aprendiz", "Admin", "Instructor", etc.)
-        private string rolUsuario; // Variable para rol del usuario
+        private string rolUsuario;
 
-        // Constructor: recibe el rol del usuario para personalizar el menú.
-        // También aplica el tamaño de ventana definido en la configuración global.
-        public MenuForm(string rol) // Constructor público
+        public MenuForm(string rol)
         {
-            InitializeComponent(); // Inicializa componentes
-            // Asigna el tamaño de la ventana desde AppConfig (centraliza la configuración)
-            this.Size = AppConfig.TamanoVentana; // Aplica tamaño desde config
-            rolUsuario = rol; // Asigna rol
+            InitializeComponent();
+            this.Size = AppConfig.TamanoVentana;
+            rolUsuario = rol;
         }
 
-        // Evento que se ejecuta al cargar el formulario.
-        // Oculta botones a los que los usuarios no tienen acceso.
-        private void MenuForm_Load(object sender, EventArgs e) // Evento Load
+        private void MenuForm_Load(object sender, EventArgs e)
         {
-            // Si el usuario es admin, ocultar el botón de eventos (solo para aprendices)
-            if (rolUsuario == "Admin") // Verifica rol admin
+            ConfigurarVistaPorRol();
+        }
+
+        // ==========================
+        // CONFIGURAR SEGÚN ROL
+        // ==========================
+        private void ConfigurarVistaPorRol()
+        {
+            // 🔥 Usa UN SOLO estándar de rol
+            if (rolUsuario == "Administrador")
             {
-                
+                // Admin ve todo
+                btnEventos.Visible = true;
+                btnUsuarios.Visible = true;
+                btnReportes.Visible = true;
             }
-            // Si el usuario es aprendiz, ocultar las opciones administrativas
-            else if (rolUsuario == "Aprendiz") // Verifica rol aprendiz
+            else if (rolUsuario == "Aprendiz")
             {
-                btnUsuarios.Visible = false;  // Oculta botón usuarios
-                btnReportes.Visible = false;  // Oculta botón reportes
+                // Aprendiz limitado
+                btnUsuarios.Visible = false;
+                btnReportes.Visible = false;
+            }
+            else
+            {
+                // Seguridad básica
+                MessageBox.Show("Rol no reconocido.");
+                this.Close();
             }
         }
 
-        // Botón: Abre el formulario de gestión de eventos.
-        // Oculta el menú actual, muestra el formulario de eventos y al cerrarlo vuelve a mostrar el menú.
-        private void btnEventos_Click(object sender, EventArgs e) // Evento Click eventos
+        // ==========================
+        // EVENTOS
+        // ==========================
+        private void btnEventos_Click(object sender, EventArgs e)
         {
-            EventosForm eventos = new EventosForm(rolUsuario); // Instancia eventos
-            this.Hide();          // Oculta menú
-            eventos.ShowDialog(); // Muestra modal
-            this.Show();          // Vuelve a mostrar menú
+            EventosForm eventos = new EventosForm(rolUsuario);
+            this.Hide();
+            eventos.ShowDialog();
+            this.Show();
         }
 
-        // Botón: Abre el formulario de gestión de usuarios (solo visible para admin).
-        private void btnUsuarios_Click(object sender, EventArgs e) // Evento Click usuarios
+        // ==========================
+        // USUARIOS (solo admin)
+        // ==========================
+        private void btnUsuarios_Click(object sender, EventArgs e)
         {
-            UsuariosForm form = new UsuariosForm(rolUsuario); // Instancia usuarios
-            this.Hide(); // Oculta menú
-            form.ShowDialog(); // Muestra modal
-            this.Show(); // Vuelve a mostrar menú
+            if (rolUsuario != "Administrador")
+            {
+                MessageBox.Show("Acceso no autorizado.");
+                return;
+            }
+
+            UsuariosForm form = new UsuariosForm(rolUsuario);
+            this.Hide();
+            form.ShowDialog();
+            this.Show();
         }
 
-        // Botón: Cierra la sesión actual y vuelve a la pantalla de login.
-        private void btnSalir_Click(object sender, EventArgs e) // Evento Click salir
+        // ==========================
+        // REPORTES (solo admin)
+        // ==========================
+        private void btnReportes_Click(object sender, EventArgs e)
+        {
+            if (rolUsuario != "Administrador")
+            {
+                MessageBox.Show("Acceso no autorizado.");
+                return;
+            }
+
+            ReportesForm form = new ReportesForm(rolUsuario);
+            this.Hide();
+            form.ShowDialog();
+            this.Show();
+        }
+
+        // ==========================
+        // SALIR
+        // ==========================
+        private void btnSalir_Click(object sender, EventArgs e)
         {
             DialogResult resultado = MessageBox.Show(
                 "¿Seguro que deseas cerrar sesión?",
@@ -75,25 +106,17 @@ namespace EventPlanner // Espacio de nombres de la aplicación
 
             if (resultado == DialogResult.Yes)
             {
-                LoginForm login = new LoginForm(); // Instancia login
-                this.Hide();          // Oculta menú
-                login.ShowDialog();   // Muestra modal
-                this.Close();         // Cierra menú
+                Session.IdUsuario = 0;
+                Session.IdAprendiz = 0;
+                Session.Rol = null;
+
+                this.Hide();
+
+                LoginForm login = new LoginForm();
+                login.ShowDialog();
+
+                this.Close();
             }
-        }
-
-        // Botón: Abre el formulario de reportes (solo visible para admin/instructor).
-        private void btnReportes_Click(object sender, EventArgs e) // Evento Click reportes
-        {
-            ReportesForm form = new ReportesForm(rolUsuario); // Instancia reportes
-            this.Hide(); // Oculta menú
-            form.ShowDialog(); // Muestra modal
-            this.Show(); // Vuelve a mostrar menú
-        }
-
-        private void panelBase_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

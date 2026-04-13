@@ -1,13 +1,10 @@
 ﻿// ============================================================
 // Archivo: FichaDAO.cs
-// Propósito: Maneja las operaciones de acceso a datos para 
-//            la entidad Ficha (fichas de formación académica).
-// Contiene métodos para obtener la lista de fichas disponibles
-//            desde la base de datos, incluyendo su código y el programa asociado.
+// DAO limpio, completo y reutilizable
 // ============================================================
 
-using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using EventPlanner.Models;
 using EventPlanner.Data;
@@ -17,43 +14,94 @@ namespace EventPlanner.DAO
     public class FichaDAO
     {
         // ===============================
-        // OBTENER TODAS LAS FICHAS
+        // OBTENER TODAS
         // ===============================
-        // Retorna una lista con todas las fichas registradas.
-        // Cada ficha contiene codigoFicha (identificador numérico) y idPrograma (programa al que pertenece).
         public List<Ficha> ObtenerFichas()
         {
-            // Lista vacía para almacenar los resultados
             List<Ficha> lista = new List<Ficha>();
 
-            // Establece conexión a la base de datos usando la clase Conexion
             using (SqlConnection conexion = new Conexion().Conectar())
             {
-                conexion.Open(); // Abre la conexión
+                conexion.Open();
 
-                // Consulta SQL: selecciona código de ficha y programa asociado
-                string query = @"SELECT codigoFicha, idPrograma
+                string query = @"SELECT codigoFicha, idPrograma 
                                  FROM Ficha";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
-                using (SqlDataReader reader = cmd.ExecuteReader()) // Ejecuta y obtiene el lector
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    // Recorre cada fila del resultado
                     while (reader.Read())
                     {
-                        // Crea un objeto Ficha y asigna los valores leídos
-                        Ficha ficha = new Ficha()
-                        {
-                            codigoFicha = Convert.ToInt32(reader["codigoFicha"]),
-                            idPrograma = Convert.ToInt32(reader["idPrograma"])
-                        };
-
-                        lista.Add(ficha); // Agrega a la lista
+                        lista.Add(MapearFicha(reader));
                     }
                 }
             }
 
-            return lista; // Retorna la lista completa
+            return lista;
+        }
+
+        // ===============================
+        // OBTENER POR CÓDIGO
+        // ===============================
+        public Ficha ObtenerPorCodigo(int codigoFicha)
+        {
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                conexion.Open();
+
+                string query = @"SELECT codigoFicha, idPrograma 
+                                 FROM Ficha
+                                 WHERE codigoFicha = @codigo";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.Add("@codigo", SqlDbType.Int).Value = codigoFicha;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return MapearFicha(reader);
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // ===============================
+        // EXISTE FICHA
+        // ===============================
+        public bool ExisteFicha(int codigoFicha)
+        {
+            using (SqlConnection conexion = new Conexion().Conectar())
+            {
+                conexion.Open();
+
+                string query = @"SELECT COUNT(*) 
+                                 FROM Ficha
+                                 WHERE codigoFicha = @codigo";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.Add("@codigo", SqlDbType.Int).Value = codigoFicha;
+
+                    return (int)cmd.ExecuteScalar() > 0;
+                }
+            }
+        }
+
+        // ===============================
+        // MAPPER PRIVADO ⭐
+        // ===============================
+        private Ficha MapearFicha(SqlDataReader reader)
+        {
+            return new Ficha
+            {
+                codigoFicha = reader.GetInt32(0),
+                idPrograma = reader.GetInt32(1)
+            };
         }
     }
 }

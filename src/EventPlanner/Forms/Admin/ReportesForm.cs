@@ -1,13 +1,4 @@
-﻿// ============================================================
-// Archivo: ReportesForm.cs
-// Propósito: Formulario para generar y exportar reportes en PDF.
-// Permite seleccionar el tipo de reporte (Eventos, Aprendices o Ambos)
-// y un rango de fechas. Muestra los resultados en un DataGridView
-// y ofrece la opción de exportarlos a un archivo PDF utilizando
-// la biblioteca iTextSharp.
-// ============================================================
-
-using EventPlanner.Models;
+﻿using EventPlanner.Models;
 using EventPlanner.Services;
 using EventPlanner.Utils;
 using iTextSharp.text;
@@ -21,94 +12,100 @@ namespace EventPlanner
 {
     public partial class ReportesForm : Form
     {
-        // Rol del usuario actual (para control de acceso, aunque no se usa directamente aquí)
         private string rolUsuario;
-        // Almacena el tipo de reporte seleccionado ("Evento", "Aprendiz" o "Ambos")
         private string tipoActual = "";
 
-        // Constructor: recibe el rol del usuario
+        // ✅ Services como atributos (consistente con arquitectura)
+        private EventoService eventoService = new EventoService();
+        private AprendizService aprendizService = new AprendizService();
+
         public ReportesForm(string rol)
         {
             InitializeComponent();
+            this.Size = AppConfig.TamanoVentana;
             rolUsuario = rol;
         }
 
-        // Al cargar el formulario, llena el ComboBox con las opciones de reporte
         private void ReportesForm_Load(object sender, EventArgs e)
         {
             cmbTipoReporte.Items.Clear();
             cmbTipoReporte.Items.Add("Evento");
             cmbTipoReporte.Items.Add("Aprendiz");
             cmbTipoReporte.Items.Add("Ambos");
-            cmbTipoReporte.SelectedIndex = -1; // Sin selección inicial
+            cmbTipoReporte.SelectedIndex = -1;
         }
 
-        // Botón "Generar Reporte": valida fechas y tipo, luego carga los datos en el DataGridView
-        private void btnReporte_Click(object sender, EventArgs e)
+        // =====================================================
+        // VALIDACIÓN CENTRALIZADA
+        // =====================================================
+        private bool ValidarFormulario()
         {
-            // Validación: tipo de reporte seleccionado
             if (cmbTipoReporte.SelectedIndex == -1)
             {
-                MessageBox.Show("Seleccione un tipo de reporte.", "Validación",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                MessageBox.Show("Seleccione un tipo de reporte.");
+                return false;
             }
 
-            // Validación: fecha desde no mayor que fecha hasta
             if (dtpDesde.Value.Date > dtpHasta.Value.Date)
             {
-                MessageBox.Show("La fecha de inicio no puede ser mayor que la fecha final.", "Validación",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                MessageBox.Show("La fecha de inicio no puede ser mayor.");
+                return false;
             }
 
-            // Guarda el tipo seleccionado y ajusta la fecha hasta para incluir todo el día
+            return true;
+        }
+
+        // =====================================================
+        // GENERAR REPORTE
+        // =====================================================
+        private void btnReporte_Click(object sender, EventArgs e)
+        {
+            if (!ValidarFormulario()) return;
+
             tipoActual = cmbTipoReporte.SelectedItem.ToString();
+
             DateTime desde = dtpDesde.Value.Date;
             DateTime hasta = dtpHasta.Value.Date.AddHours(23).AddMinutes(59);
 
             try
             {
-                // Limpia el DataGridView antes de cargar nuevos datos
                 dgvReporte.DataSource = null;
                 dgvReporte.Columns.Clear();
 
-                // Carga según el tipo
-                if (tipoActual == "Evento")
+                switch (tipoActual)
                 {
-                    CargarReporteEventos(desde, hasta);
-                }
-                else if (tipoActual == "Aprendiz")
-                {
-                    CargarReporteAprendices(desde, hasta);
-                }
-                else if (tipoActual == "Ambos")
-                {
-                    // Para "Ambos" se carga el mismo reporte de eventos
-                    // (podría modificarse para mostrar ambos, pero por diseño actual solo eventos)
-                    CargarReporteEventos(desde, hasta);
+                    case "Evento":
+                        CargarEventos(desde, hasta);
+                        break;
+
+                    case "Aprendiz":
+                        CargarAprendices(desde, hasta);
+                        break;
+
+                    case "Ambos":
+                        CargarEventos(desde, hasta); // simple por ahora
+                        break;
                 }
 
-                // Si no hay filas, informa al usuario
                 if (dgvReporte.Rows.Count == 0)
-                    MessageBox.Show("No se encontraron registros en el rango de fechas seleccionado.", "Sin resultados",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("No hay datos en ese rango.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al generar reporte: " + ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
             }
         }
 
-        // Carga el reporte de eventos en el DataGridView
-        private void CargarReporteEventos(DateTime desde, DateTime hasta)
+        // =====================================================
+        // EVENTOS
+        // =====================================================
+        private void CargarEventos(DateTime desde, DateTime hasta)
         {
-            EventoService service = new EventoService();
-            List<Evento> eventos = service.ObtenerEventosPorFecha(desde, hasta);
+            List<Evento> eventos =
+                eventoService.ObtenerEventosPorFecha(desde, hasta);
 
-            dgvReporte.DataSource = eventos; // Enlaza la lista al grid
+            dgvReporte.DataSource = eventos;
 
-            // Configuración de columnas visibles y sus encabezados
             dgvReporte.Columns["idEvento"].HeaderText = "ID";
             dgvReporte.Columns["nombreEvento"].HeaderText = "Nombre";
             dgvReporte.Columns["tipoEvento"].HeaderText = "Tipo";
@@ -117,7 +114,7 @@ namespace EventPlanner
             dgvReporte.Columns["cupoMaximo"].HeaderText = "Cupo";
             dgvReporte.Columns["activo"].HeaderText = "Activo";
 
-            // Oculta columnas que no son relevantes para el reporte
+            // ocultar basura
             dgvReporte.Columns["descripcionEvento"].Visible = false;
             dgvReporte.Columns["fechaFinEvento"].Visible = false;
             dgvReporte.Columns["fechaInicioInscripcion"].Visible = false;
@@ -125,54 +122,41 @@ namespace EventPlanner
             dgvReporte.Columns["idUsuarioCreador"].Visible = false;
         }
 
-        // Carga el reporte de aprendices en el DataGridView
-        private void CargarReporteAprendices(DateTime desde, DateTime hasta)
+        // =====================================================
+        // APRENDICES
+        // =====================================================
+        private void CargarAprendices(DateTime desde, DateTime hasta)
         {
-            AprendizService service = new AprendizService();
-            List<Aprendiz> aprendices = service.ObtenerAprendicesPorFecha(desde, hasta);
+            List<Aprendiz> lista =
+                aprendizService.ObtenerAprendicesPorFecha(desde, hasta);
 
-            dgvReporte.DataSource = aprendices;
+            dgvReporte.DataSource = lista;
 
-            // Muestra solo las columnas más relevantes
             dgvReporte.Columns["idAprendiz"].HeaderText = "ID";
             dgvReporte.Columns["cedulaAprendiz"].HeaderText = "Cédula";
             dgvReporte.Columns["nombreAprendiz"].HeaderText = "Nombre";
             dgvReporte.Columns["correoAprendiz"].HeaderText = "Correo";
             dgvReporte.Columns["telefonoAprendiz"].HeaderText = "Teléfono";
 
-            // Oculta columnas internas o menos útiles
             dgvReporte.Columns["edadAprendiz"].Visible = false;
             dgvReporte.Columns["generoAprendiz"].Visible = false;
             dgvReporte.Columns["codigoFicha"].Visible = false;
             dgvReporte.Columns["idUsuario"].Visible = false;
         }
 
-        // Botón "Exportar": guarda el contenido del DataGridView en un archivo PDF
+        // =====================================================
+        // EXPORTAR PDF
+        // =====================================================
         private void btnExportar_Click(object sender, EventArgs e)
         {
-            // Validaciones similares a las del reporte
-            if (cmbTipoReporte.SelectedIndex == -1)
-            {
-                MessageBox.Show("Seleccione un tipo de reporte para exportar.", "Validación",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (dtpDesde.Value.Date > dtpHasta.Value.Date)
-            {
-                MessageBox.Show("La fecha de inicio no puede ser mayor que la fecha final.", "Validación",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            if (!ValidarFormulario()) return;
 
             if (dgvReporte.Rows.Count == 0)
             {
-                MessageBox.Show("Primero genera el reporte antes de exportar.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Genera el reporte primero.");
                 return;
             }
 
-            // Diálogo para elegir la ubicación y nombre del archivo PDF
             SaveFileDialog dialogo = new SaveFileDialog();
             dialogo.Filter = "PDF (*.pdf)|*.pdf";
             dialogo.FileName = $"Reporte_{tipoActual}_{DateTime.Now:yyyyMMdd}";
@@ -182,63 +166,41 @@ namespace EventPlanner
                 try
                 {
                     ExportarPDF(dialogo.FileName);
-                    MessageBox.Show("PDF exportado correctamente.", "Éxito",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("PDF generado.");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al exportar: " + ex.Message);
+                    MessageBox.Show("Error: " + ex.Message);
                 }
             }
         }
 
-        // Genera el archivo PDF a partir del DataGridView actual
-        private void ExportarPDF(string rutaArchivo)
+        private void ExportarPDF(string ruta)
         {
-            // Crea un documento PDF tamaño A4 con márgenes
             Document doc = new Document(PageSize.A4, 30, 30, 40, 40);
-            PdfWriter.GetInstance(doc, new FileStream(rutaArchivo, FileMode.Create));
+            PdfWriter.GetInstance(doc, new FileStream(ruta, FileMode.Create));
             doc.Open();
 
-            // Definición de fuentes
-            Font fuenteTitulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16);
-            Font fuenteSubtitulo = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-            Font fuenteHeader = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 9, BaseColor.WHITE);
-            Font fuenteCelda = FontFactory.GetFont(FontFactory.HELVETICA, 8);
+            Font titulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
+            Font texto = FontFactory.GetFont(FontFactory.HELVETICA, 9);
 
-            // Título y encabezado del reporte
-            doc.Add(new Paragraph($"Reporte de {tipoActual}s", fuenteTitulo));
-            doc.Add(new Paragraph(
-                $"Período: {dtpDesde.Value:dd/MM/yyyy} — {dtpHasta.Value:dd/MM/yyyy}",
-                fuenteSubtitulo));
-            doc.Add(new Paragraph($"Generado: {DateTime.Now:dd/MM/yyyy HH:mm}", fuenteSubtitulo));
+            doc.Add(new Paragraph($"Reporte de {tipoActual}", titulo));
+            doc.Add(new Paragraph($"Generado: {DateTime.Now}", texto));
             doc.Add(new Paragraph(" "));
 
-            // Crear tabla PDF con el número de columnas del DataGridView
-            int columnas = dgvReporte.Columns.Count;
-            PdfPTable tabla = new PdfPTable(columnas);
+            PdfPTable tabla = new PdfPTable(dgvReporte.Columns.Count);
             tabla.WidthPercentage = 100;
 
-            // Encabezados de la tabla (se toman los HeaderText de las columnas)
             foreach (DataGridViewColumn col in dgvReporte.Columns)
             {
-                PdfPCell celda = new PdfPCell(new Phrase(col.HeaderText, fuenteHeader));
-                celda.BackgroundColor = new BaseColor(46, 117, 182); // Color de fondo azul
-                celda.Padding = 5;
-                tabla.AddCell(celda);
+                tabla.AddCell(new Phrase(col.HeaderText));
             }
 
-            // Recorrer todas las filas del DataGridView
             foreach (DataGridViewRow fila in dgvReporte.Rows)
             {
                 foreach (DataGridViewCell celda in fila.Cells)
                 {
-                    string valor = celda.Value?.ToString() ?? "";
-                    // Si el valor es una fecha, la formatea como dd/MM/yyyy HH:mm
-                    if (DateTime.TryParse(valor, out DateTime fecha))
-                        valor = fecha.ToString("dd/MM/yyyy HH:mm");
-
-                    tabla.AddCell(new PdfPCell(new Phrase(valor, fuenteCelda)) { Padding = 4 });
+                    tabla.AddCell(celda.Value?.ToString() ?? "");
                 }
             }
 
@@ -246,7 +208,9 @@ namespace EventPlanner
             doc.Close();
         }
 
-        // Botón "Volver": regresa al menú principal
+        // =====================================================
+        // VOLVER
+        // =====================================================
         private void btnVolver_Click(object sender, EventArgs e)
         {
             MenuForm menu = new MenuForm(rolUsuario);
