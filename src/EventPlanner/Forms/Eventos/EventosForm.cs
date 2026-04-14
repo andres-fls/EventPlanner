@@ -131,7 +131,6 @@ namespace EventPlanner
                 dgvEventos.Columns["idEvento"].HeaderText = "ID";
                 dgvEventos.Columns["nombreEvento"].HeaderText = "Nombre";
                 dgvEventos.Columns["categoriaEvento"].HeaderText = "Categoria";
-                dgvEventos.Columns["tipoInscripcion"].HeaderText = "Tipo Inscripción";
                 dgvEventos.Columns["lugarEvento"].HeaderText = "Lugar";
                 dgvEventos.Columns["fechaInicioEvento"].HeaderText = "Fecha";
                 dgvEventos.Columns["cupoMaximo"].HeaderText = "Cupo";
